@@ -27,10 +27,15 @@ const config: Config = {
           "0%": { transform: "translateX(-50%)" },
           "100%": { transform: "translateX(0%)" },
         },
+        ticker: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
       },
       animation: {
         scroll: "scroll 20s linear infinite",
         "scroll-right": "scroll-right 20s linear infinite",
+        ticker: "ticker 40s linear infinite",
       },
     },
   },

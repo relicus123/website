@@ -50,18 +50,13 @@ export default function AdMarquee() {
 
   return (
     <div className="bg-brand-green text-white overflow-hidden py-3 relative z-40 w-full shadow-md flex items-center">
-      <marquee
-        className="text-sm md:text-base"
-        behavior="scroll"
-        direction="right"
-        scrollamount="5"
-      >
-        {ads.map((ad, index) => (
-          <span key={ad._id} className={index < ads.length - 1 ? "mr-8" : ""}>
+      <div className="flex whitespace-nowrap gap-4 px-8 w-full animate-ticker hover:[animation-play-state:paused]">
+        {ads.map((ad) => (
+          <span key={ad._id} className="text-sm md:text-base flex-shrink-0">
             {parseMarkdown(ad.content)}
           </span>
         ))}
-      </marquee>
+      </div>
     </div>
   );
 }
