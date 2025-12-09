@@ -9,6 +9,7 @@ interface Therapist {
   designation: string;
   photo: string;
   price: number;
+
   bio?: string;
   specialties?: string[];
   isActive: boolean;
@@ -21,11 +22,15 @@ export default function AdminTherapistsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     designation: "",
     photo: "",
     price: 0,
+
     bio: "",
     specialties: "",
     isActive: true,
@@ -71,15 +76,98 @@ export default function AdminTherapistsPage() {
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // File Type Validation
+      const validTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        alert("Only image files (JPEG, PNG, WEBP) are allowed.");
+        e.target.value = ""; // Clear input
+        setSelectedFile(null);
+        return;
+      }
+
+      // File Size Validation (5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        alert("File size must be under 5MB.");
+        e.target.value = ""; // Clear input
+        setSelectedFile(null);
+        return;
+      }
+
+      setSelectedFile(file);
+    }
+  };
+
+  const uploadImageToCloudinary = async (file: File): Promise<string | null> => {
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      alert("Cloudinary configuration is missing. Please check your .env file.");
+      console.error("Missing Cloudinary credentials");
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+    formData.append("cloud_name", cloudName);
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      if (data.secure_url) {
+        return data.secure_url;
+      } else {
+        console.error("Cloudinary upload failed:", data);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error uploading to Cloudinary:", error);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let photoUrl = formData.photo;
+
+    // Upload image if a new file is selected
+    if (selectedFile) {
+      setUploading(true);
+      const uploadedUrl = await uploadImageToCloudinary(selectedFile);
+      setUploading(false);
+
+      if (uploadedUrl) {
+        photoUrl = uploadedUrl;
+      } else {
+        alert("Failed to upload image. Please try again.");
+        return;
+      }
+    } else if (!photoUrl) {
+      alert("Please select an image or provide a photo URL.");
+      return;
+    }
 
     try {
       const payload = {
         name: formData.name,
         designation: formData.designation,
-        photo: formData.photo,
+        photo: photoUrl,
         price: formData.price,
+
         bio: formData.bio,
         specialties: formData.specialties
           .split(",")
@@ -88,7 +176,7 @@ export default function AdminTherapistsPage() {
         isActive: formData.isActive,
       };
 
-      console.log("Creating therapist with payload:", payload);
+      console.log("Creating/Updating therapist with payload:", payload);
 
       if (editingId) {
         // Update therapist
@@ -103,6 +191,7 @@ export default function AdminTherapistsPage() {
           setMessage("Therapist updated successfully");
           setEditingId(null);
           setShowForm(false);
+          setSelectedFile(null);
           fetchTherapists();
         } else {
           setMessage("Error updating therapist");
@@ -124,10 +213,12 @@ export default function AdminTherapistsPage() {
             designation: "",
             photo: "",
             price: 0,
+
             bio: "",
             specialties: "",
             isActive: true,
           });
+          setSelectedFile(null);
           fetchTherapists();
         } else {
           setMessage("Error creating therapist");
@@ -145,11 +236,13 @@ export default function AdminTherapistsPage() {
       designation: therapist.designation,
       photo: therapist.photo,
       price: therapist.price,
+
       bio: therapist.bio || "",
       specialties: therapist.specialties?.join(", ") || "",
       isActive: therapist.isActive,
     });
     setEditingId(therapist._id);
+    setSelectedFile(null);
     setShowForm(true);
   };
 
@@ -180,11 +273,13 @@ export default function AdminTherapistsPage() {
       designation: "",
       photo: "",
       price: 0,
+
       bio: "",
       specialties: "",
       isActive: true,
     });
     setEditingId(null);
+    setSelectedFile(null);
     setShowForm(false);
   };
 
@@ -256,26 +351,40 @@ export default function AdminTherapistsPage() {
                 className="col-span-1 px-4 py-2 border border-brand-light rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
               />
 
-              <input
-                type="url"
-                name="photo"
-                placeholder="Photo URL"
-                value={formData.photo}
-                onChange={handleInputChange}
-                required
-                className="col-span-1 px-4 py-2 border border-brand-light rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
-              />
+              <div className="col-span-1">
+                <label className="block text-sm font-medium text-brand-dark mb-1">
+                  Photo
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full px-4 py-2 border border-brand-light rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
+                />
+                {formData.photo && !selectedFile && (
+                  <p className="text-xs text-green-600 mt-1">
+                    Current photo: {formData.photo.substring(0, 30)}...
+                  </p>
+                )}
+              </div>
 
-              <input
-                type="number"
-                name="price"
-                placeholder="Session Price (₹)"
-                value={formData.price}
-                onChange={handleInputChange}
-                required
-                min="0"
-                className="col-span-1 px-4 py-2 border border-brand-light rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
-              />
+
+
+              <div className="col-span-1">
+                <label className="block text-sm font-medium text-brand-dark mb-1">
+                  Session Price (₹)
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Session Price (₹)"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  required
+                  min="0"
+                  className="w-full px-4 py-2 border border-brand-light rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
+                />
+              </div>
 
               <textarea
                 name="bio"
@@ -307,9 +416,18 @@ export default function AdminTherapistsPage() {
 
               <button
                 type="submit"
-                className="col-span-2 px-4 py-2 bg-brand-green hover:bg-brand-dark text-white font-semibold rounded-lg transition"
+                disabled={uploading}
+                className={`col-span-2 px-4 py-2 text-white font-semibold rounded-lg transition ${
+                  uploading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-brand-green hover:bg-brand-dark"
+                }`}
               >
-                {editingId ? "Update Therapist" : "Create Therapist"}
+                {uploading
+                  ? "Uploading..."
+                  : editingId
+                  ? "Update Therapist"
+                  : "Create Therapist"}
               </button>
             </form>
           </div>
@@ -329,6 +447,7 @@ export default function AdminTherapistsPage() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-brand-dark">
                     Designation
                   </th>
+
                   <th className="px-6 py-4 text-left text-sm font-semibold text-brand-dark">
                     Price
                   </th>
@@ -344,7 +463,7 @@ export default function AdminTherapistsPage() {
                 {therapists.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={6}
                       className="px-6 py-8 text-center text-brand-dark/60"
                     >
                       No therapists found
@@ -362,6 +481,7 @@ export default function AdminTherapistsPage() {
                       <td className="px-6 py-4 text-sm text-brand-dark/70">
                         {therapist.designation}
                       </td>
+
                       <td className="px-6 py-4 text-sm text-brand-dark font-semibold">
                         ₹{therapist.price}
                       </td>

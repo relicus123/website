@@ -3,6 +3,8 @@ import connectDB from "@/lib/mongodb";
 import Therapist from "@/models/Therapist";
 import { ObjectId } from "mongodb";
 
+export const dynamic = "force-dynamic";
+
 // GET single therapist
 export async function GET(
   request: NextRequest,

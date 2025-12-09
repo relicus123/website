@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 
+
 interface Banner {
   _id: string;
   title: string;
@@ -14,8 +15,7 @@ interface Banner {
 const DEFAULT_BANNER: Banner = {
   _id: "default",
   title: "Relicus Care",
-  imageUrl:
-    "https://res.cloudinary.com/dqpzzx5jb/image/upload/v1765205630/WhatsApp_Image_2025-12-08_at_12.52.22_231bc71e_fnipo3.jpg",
+  imageUrl: "/header.jpg",
 };
 
 export default function HeroSlideshow() {
@@ -23,7 +23,7 @@ export default function HeroSlideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    fetchBanners();
+    // fetchBanners(); // Disabled to force local image
   }, []);
 
   const fetchBanners = async () => {
@@ -32,10 +32,8 @@ export default function HeroSlideshow() {
       if (response.data.success && response.data.banners.length > 0) {
         setBanners(response.data.banners);
       }
-      // If fetch fails or empty, we keep the default banner (already in state)
     } catch (error) {
       console.error("Failed to fetch banners:", error);
-      // Keep default banner
     }
   };
 
@@ -101,6 +99,7 @@ export default function HeroSlideshow() {
               </div>
             )}
           </div>
+
         ))}
       </div>
 

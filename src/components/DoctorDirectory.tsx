@@ -9,7 +9,6 @@ interface Doctor {
   _id: string;
   name: string;
   specialty: string;
-  experience: number;
   bio?: string;
   qualifications: string[];
   languages: string[];
@@ -21,18 +20,23 @@ interface Doctor {
 
 interface DoctorDirectoryProps {
   healthScore?: number;
+  initialDoctors?: Doctor[];
 }
 
-export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function DoctorDirectory({ healthScore, initialDoctors = [] }: DoctorDirectoryProps) {
+  const [doctors, setDoctors] = useState<Doctor[]>(initialDoctors);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>(initialDoctors);
+  const [loading, setLoading] = useState(initialDoctors.length === 0);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [searchKeyword, setSearchKeyword] = useState("");
 
+  const [visibleCount, setVisibleCount] = useState(10);
+
   useEffect(() => {
-    fetchDoctors();
-  }, []);
+    if (initialDoctors.length === 0) {
+      fetchDoctors();
+    }
+  }, [initialDoctors.length]);
 
   const applyFilters = useCallback(() => {
     const q = searchKeyword.trim().toLowerCase();
@@ -48,6 +52,7 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
     );
 
     setFilteredDoctors(filtered);
+    setVisibleCount(10); // Reset visible count on search
   }, [doctors, searchKeyword]);
 
   useEffect(() => {
@@ -56,6 +61,7 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
 
   const fetchDoctors = async () => {
     try {
+      setLoading(true);
       const response = await axios.get("/api/doctors");
       setDoctors(response.data.doctors);
       setFilteredDoctors(response.data.doctors);
@@ -68,6 +74,10 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
 
   const handleBookingComplete = () => {
     setSelectedDoctor(null);
+  };
+
+  const handleViewMore = () => {
+    setVisibleCount((prev) => prev + 6);
   };
 
   if (loading) {
@@ -86,10 +96,10 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
       <section id="book" className="space-y-6">
         {/* Search Section (pill) */}
         <div className="w-full">
-          <div className="mx-auto max-w-md w-full">
-            <div className="bg-[#f7f7f7] border border-[#dcdcdc] rounded-full px-4 py-2 flex items-center gap-3 shadow-none">
+          <div className="mx-auto max-w-2xl w-full">
+            <div className="bg-[#f7f7f7] border border-[#dcdcdc] rounded-full px-6 py-4 flex items-center gap-3 shadow-none">
               <svg
-                className="w-4 h-4 text-gray-700"
+                className="w-6 h-6 text-gray-700"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -106,7 +116,7 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
                 placeholder="Search therapist name or service"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="flex-1 text-sm bg-transparent focus:outline-none placeholder:text-gray-400 text-gray-800"
+                className="flex-1 text-lg bg-transparent focus:outline-none placeholder:text-gray-400 text-gray-800"
               />
             </div>
           </div>
@@ -129,7 +139,7 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
         ) : (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredDoctors.map((doctor) => (
+              {filteredDoctors.slice(0, visibleCount).map((doctor) => (
                 <DoctorCard
                   key={doctor._id}
                   doctor={doctor}
@@ -141,11 +151,16 @@ export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
               ))}
             </div>
 
-            <div className="flex justify-center pt-2">
-              <button className="px-5 py-2 rounded-full bg-white border border-brand-dark/30 text-brand-dark hover:bg-brand-light transition">
-                View more therapists
-              </button>
-            </div>
+            {visibleCount < filteredDoctors.length && (
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={handleViewMore}
+                  className="px-6 py-2.5 rounded-full bg-white border border-brand-dark/20 text-brand-dark font-medium hover:bg-brand-light hover:border-brand-dark/40 transition-all shadow-sm hover:shadow-md"
+                >
+                  View More Therapists
+                </button>
+              </div>
+            )}
           </>
         )}
       </section>

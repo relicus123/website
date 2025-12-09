@@ -18,6 +18,20 @@ const config: Config = {
         heading: ['"Poppins"', '"Inter"', "sans-serif"],
         body: ['"Open Sans"', '"Source Sans Pro"', "sans-serif"],
       },
+      keyframes: {
+        scroll: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "scroll-right": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
+      },
+      animation: {
+        scroll: "scroll 20s linear infinite",
+        "scroll-right": "scroll-right 20s linear infinite",
+      },
     },
   },
   plugins: [],

@@ -2,16 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Therapist from "@/models/Therapist";
 
+export const dynamic = "force-dynamic";
+
 // POST - Create new therapist
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
     const body = await request.json();
-    const { name, designation, photo, price, bio, specialties, isActive } =
-      body;
+    const {
+      name,
+      designation,
+      photo,
+      price,
+      bio,
+      specialties,
+      isActive,
+    } = body;
 
-    if (!name || !designation || !photo || price === undefined) {
+    if (
+      !name ||
+      !designation ||
+      !photo ||
+      price === undefined
+    ) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }

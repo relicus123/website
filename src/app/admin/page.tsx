@@ -45,6 +45,14 @@ export default function AdminDashboard() {
           >
             <span className="text-lg">📅</span> Manage All Bookings
           </button>
+
+          {/* Manage Ads Button */}
+          <button
+            onClick={() => router.push("/admin/promotions")}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+          >
+            <span className="text-lg">📢</span> Manage Ads
+          </button>
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-200">
