@@ -4,7 +4,7 @@ import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 
-export const authOptions = {
+const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -54,14 +54,14 @@ export const authOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = (user as any).id || token.sub;
         token.role = (user as any).role || "user";
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       (session as any).user.id = token.id;
       (session as any).user.role = token.role;
       return session;

@@ -125,7 +125,9 @@ export async function GET(req: NextRequest) {
         doc.on("end", () => resolve(Buffer.concat(chunks)));
       });
 
-      return new NextResponse(buffer, {
+      const pdfBytes = new Uint8Array(buffer);
+
+      return new NextResponse(pdfBytes, {
         status: 200,
         headers: {
           "Content-Type": "application/pdf",

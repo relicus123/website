@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 
 type Booking = {
   _id: string;
@@ -57,7 +57,7 @@ export default function AdminBookingsPage() {
     return params.toString();
   }, [doctorId, from, page, search, status, to]);
 
-  const loadBookings = async () => {
+  const loadBookings = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -74,7 +74,7 @@ export default function AdminBookingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [queryString]);
 
   const loadDoctors = async () => {
     try {
@@ -90,7 +90,7 @@ export default function AdminBookingsPage() {
 
   useEffect(() => {
     loadBookings();
-  }, [queryString]);
+  }, [loadBookings]);
 
   useEffect(() => {
     loadDoctors();
