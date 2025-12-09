@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Poppins, Open_Sans, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -33,7 +35,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} ${openSans.variable} ${sourceSans.variable}`}
       >
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <Header />
+          <div className="pt-[85px]">{children}</div>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );

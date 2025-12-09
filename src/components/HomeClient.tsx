@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import DoctorDirectory from "@/components/DoctorDirectory";
 import ChatbotPanel from "@/components/ChatbotPanel";
 import ServicesMarquee from "@/components/ServicesMarquee";
-import AdMarquee from "@/components/AdMarquee";
 import HeroSlideshow from "@/components/HeroSlideshow";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
@@ -127,53 +125,9 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
 
   return (
     <>
-      {/* Header */}
-      <header className="bg-white border-b border-brand-light/60 fixed top-0 left-0 right-0 z-50 w-full">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap gap-4 justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-auto">
-              <Image
-                src="/logo-relicus.png"
-                alt="Relicus"
-                width={160}
-                height={40}
-                priority
-              />
-            </div>
-          </div>
-          <nav className="flex items-center gap-5 md:gap-8 text-sm text-brand-dark font-medium">
-            <Link href="/" className="hover:text-brand-dark/70 transition">
-              Home
-            </Link>
-            <Link href="/about" className="hover:text-brand-dark/70 transition">
-              About Us
-            </Link>
-            <Link
-              href="#services"
-              className="hover:text-brand-dark/70 transition"
-            >
-              Services
-            </Link>
-            <Link
-              href="#therapists"
-              className="hover:text-brand-dark/70 transition"
-            >
-              Therapists
-            </Link>
-            <Link
-              href="#book"
-              className="button-primary px-5 py-2 text-sm font-semibold whitespace-nowrap shadow-sm"
-            >
-              Book a Therapy
-            </Link>
-          </nav>
-        </div>
-        <AdMarquee />
-      </header>
-
       <div className="smooth-wrapper">
         <div className="smooth-content">
-          <main id="home" className="min-h-screen bg-brand-light pt-[85px]">
+          <main id="home" className="min-h-screen bg-brand-light">
             {/* Hero Banner */}
             <section className="bg-brand-blue/15">
               <div className="max-w-7xl mx-auto px-6 py-10">
@@ -284,60 +238,6 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
                 </div>
               </div>
             </section>
-
-            {/* Footer */}
-            <footer className="bg-brand-dark text-white mt-10">
-              <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-4 gap-8">
-                <div>
-                  <p className="font-semibold mb-3">Services</p>
-                  <ul className="space-y-2 text-sm text-white/80">
-                    <li>Online Therapy</li>
-                    <li>Physiotherapy</li>
-                    <li>Clinical Psychology</li>
-                    <li>Wellness Coaching</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-semibold mb-3">Company</p>
-                  <ul className="space-y-2 text-sm text-white/80">
-                    <li>About</li>
-                    <li>Careers</li>
-                    <li>Blogs</li>
-                    <li>Contact</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-semibold mb-3">Support</p>
-                  <ul className="space-y-2 text-sm text-white/80">
-                    <li>FAQs</li>
-                    <li>Privacy Policy</li>
-                    <li>Terms & Conditions</li>
-                    <li>Refunds</li>
-                  </ul>
-                </div>
-                <div className="space-y-3">
-                  <p className="font-semibold">Stay connected</p>
-                  <p className="text-sm text-white/80">
-                    24/7 chat support and expert guidance whenever you need it.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center">
-                      in
-                    </span>
-                    <span className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center">
-                      fb
-                    </span>
-                    <span className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center">
-                      ig
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="border-t border-white/20 py-4 text-center text-xs text-white/70">
-                © {new Date().getFullYear()} YourCare Platform. Built for
-                reliable, conflict-free scheduling and payments.
-              </div>
-            </footer>
 
             <ChatbotPanel onComplete={handleChatbotComplete} />
           </main>

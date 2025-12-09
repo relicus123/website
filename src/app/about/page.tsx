@@ -1,8 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-
 const highlights = [
   "Trauma care",
   "Rehabilitation",
@@ -15,42 +12,6 @@ const highlights = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-brand-light">
-      <header className="bg-white border-b border-brand-light/60 sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap gap-4 justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-auto">
-              <Image
-                src="/logo-relicus.png"
-                alt="Relicus"
-                width={160}
-                height={40}
-                priority
-              />
-            </div>
-          </div>
-          <nav className="flex items-center gap-3 text-sm text-brand-dark font-medium">
-            <Link href="/" className="hover:text-brand-dark/70">
-              Home
-            </Link>
-            <Link href="/about" className="hover:text-brand-dark/70">
-              About Us
-            </Link>
-            <Link href="/#services" className="hover:text-brand-dark/70">
-              Services
-            </Link>
-            <Link href="/#therapists" className="hover:text-brand-dark/70">
-              Therapists
-            </Link>
-            <Link
-              href="/#book"
-              className="button-primary px-4 py-2 text-sm whitespace-nowrap"
-            >
-              Book a Therapy
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <section className="bg-white border-b border-brand-light/60 py-10">
         <div className="max-w-7xl mx-auto px-6">
           <p className="text-sm uppercase tracking-wide text-brand-dark/70">
@@ -114,9 +75,10 @@ export default function AboutPage() {
                 <p className="text-sm text-brand-dark/80 leading-relaxed">
                   Provide compassionate, evidence-based, personalized mental
                   health care through a holistic, multidisciplinary approach:
-                  psychotherapy, counseling, rehabilitation, and career guidance,
-                  tailored to each profile—while advancing research and community
-                  engagement via seminars, workshops, and webinars.
+                  psychotherapy, counseling, rehabilitation, and career
+                  guidance, tailored to each profile—while advancing research
+                  and community engagement via seminars, workshops, and
+                  webinars.
                 </p>
               </div>
             </div>
@@ -170,4 +132,3 @@ export default function AboutPage() {
     </main>
   );
 }
-

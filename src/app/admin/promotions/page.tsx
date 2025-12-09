@@ -49,7 +49,9 @@ export default function ManageAds() {
     e.preventDefault();
     try {
       // Combine date and time
-      const startDateTime = new Date(`${formData.startDate}T${formData.startTime}`);
+      const startDateTime = new Date(
+        `${formData.startDate}T${formData.startTime}`
+      );
       const endDateTime = new Date(`${formData.endDate}T${formData.endTime}`);
 
       const res = await fetch("/api/admin/promotions", {
@@ -63,7 +65,13 @@ export default function ManageAds() {
       });
 
       if (res.ok) {
-        setFormData({ content: "", startDate: "", startTime: "", endDate: "", endTime: "" });
+        setFormData({
+          content: "",
+          startDate: "",
+          startTime: "",
+          endDate: "",
+          endTime: "",
+        });
         fetchAds();
       }
     } catch (error) {
@@ -118,9 +126,14 @@ export default function ManageAds() {
         {/* Add Ad Form */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">Add New Ad</h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ad Content</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Ad Content
+              </label>
               <input
                 type="text"
                 placeholder="e.g., 10% OFF on all therapies"
@@ -132,10 +145,12 @@ export default function ManageAds() {
                 required
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Date
+                </label>
                 <input
                   type="date"
                   className="w-full p-2 border rounded"
@@ -147,7 +162,9 @@ export default function ManageAds() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Time
+                </label>
                 <input
                   type="time"
                   className="w-full p-2 border rounded"
@@ -162,7 +179,9 @@ export default function ManageAds() {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Date
+                </label>
                 <input
                   type="date"
                   className="w-full p-2 border rounded"
@@ -174,7 +193,9 @@ export default function ManageAds() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Time
+                </label>
                 <input
                   type="time"
                   className="w-full p-2 border rounded"
@@ -200,77 +221,86 @@ export default function ManageAds() {
 
         {/* Ads List */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Content
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Start Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  End Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {ads.map((ad) => (
-                <tr key={ad._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {ad.content}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(ad.startDate).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(ad.endDate).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {(() => {
-                      const isExpired = new Date(ad.endDate) < new Date();
-                      return (
-                        <button
-                          onClick={() => !isExpired && toggleActive(ad)}
-                          disabled={isExpired}
-                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                            isExpired
-                              ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                              : ad.isActive
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {isExpired ? "Inactive (Expired)" : ad.isActive ? "Active" : "Inactive"}
-                        </button>
-                      );
-                    })()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleDelete(ad._id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {ads.length === 0 && (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                    No ads found. Create one above.
-                  </td>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    Content
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    Start Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    End Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    Actions
+                  </th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {ads.map((ad) => (
+                  <tr key={ad._id}>
+                    <td className="px-6 py-4 text-sm text-gray-900 max-w-md">
+                      {ad.content}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(ad.startDate).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(ad.endDate).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {(() => {
+                        const isExpired = new Date(ad.endDate) < new Date();
+                        return (
+                          <button
+                            onClick={() => !isExpired && toggleActive(ad)}
+                            disabled={isExpired}
+                            className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              isExpired
+                                ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                : ad.isActive
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {isExpired
+                              ? "Inactive (Expired)"
+                              : ad.isActive
+                              ? "Active"
+                              : "Inactive"}
+                          </button>
+                        );
+                      })()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={() => handleDelete(ad._id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {ads.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-6 py-4 text-center text-gray-500"
+                    >
+                      No ads found. Create one above.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
