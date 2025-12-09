@@ -48,6 +48,10 @@ a {
   padding: 1rem 0;
 }
 
+.services-marquee.paused .marquee-track {
+  animation: none !important;
+}
+
 .services-marquee::before,
 .services-marquee::after {
   content: "";
@@ -55,7 +59,7 @@ a {
   top: 0;
   bottom: 0;
   width: 120px;
-  z-index: 10;
+  z-index: 9;
   pointer-events: none;
 }
 
@@ -74,6 +78,7 @@ a {
   gap: 1.5rem;
   width: max-content;
   animation: marqueeScroll 40s linear infinite;
+  transition: transform 0.5s ease-in-out;
 }
 
 .marquee-track:hover {

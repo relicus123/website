@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins, Open_Sans, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
+import SessionProvider from "@/components/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -8,7 +9,10 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
-const openSans = Open_Sans({ subsets: ["latin"], variable: "--font-open-sans" });
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+});
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
@@ -29,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} ${openSans.variable} ${sourceSans.variable}`}
       >
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

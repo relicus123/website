@@ -1,234 +1,353 @@
-# Physiologist Consultation Platform (v7.0)
+# Relicus - Mental Health & Wellness Platform (v8.0)
 
-Full-stack Next.js 14 platform for booking physiologists with reliability-first payments (Razorpay), webhook recovery, PHQ-2/GAD-2 screening, and MongoDB Atlas.
+Full-stack Next.js 14 platform for booking therapists with reliable Razorpay payments, comprehensive mental health services, and MongoDB Atlas backend.
 
 ## Stack
 
 - **Frontend:** Next.js 14 (App Router, TypeScript, React 18)
 - **Styling:** Tailwind CSS with medical brand palette (Midnight Blue, Healing Green, Calm Blue, Gainsboro)
 - **Database:** MongoDB Atlas (Mongoose ODM)
-- **Payments:** Razorpay (orders, signature verification, webhooks, refunds)
-- **Auth:** NextAuth.js (planned for admin dashboard)
+- **Payments:** Razorpay (orders, signature verification)
 - **Email:** Zoho Mail via Nodemailer
-- **Images:** Cloudinary unsigned uploads
+- **Images:** Local static assets (SVG & image files)
 - **Deployment:** Vercel-ready
 
 ## Features
 
-✅ **Bulletproof Booking Engine**
+✅ **Mental Health Services Directory**
 
-- Phase A (Filter): Slot API subtracts confirmed/paid bookings
-- Phase B (Gatekeeper): Pre-payment slot validation
-- Phase C (Safety Net): Webhook recovery + auto-refund on race conditions
+- 6 core services: Counselling, Assessments, Learning Support, Speech Therapy, Training, Referral Services
+- Horizontal scrolling carousel with manual + auto-scroll
+- Netflix-style service detail modals
+- Local SVG placeholder system for fast loading
 
-✅ **PHQ-2 & GAD-2 Mental Health Screening Chatbot**
+✅ **Therapist Booking System**
 
-- Floating toggle button, guided questionnaire
-- Health score feeds into booking metadata
+- Complete therapist directory with search functionality
+- Therapist profiles: name, designation, specialties, session price, bio
+- Real-time search by name or specialty
+- Therapist admin panel for managing profiles
 
 ✅ **Razorpay Payment Integration**
 
-- Order creation with booking metadata in notes
-- Signature verification
-- Webhook fallback for ghost payments
-- Automatic refund on double-booking conflicts
-
-✅ **Doctor Directory & Booking Modal**
-
-- Real-time availability fetching
-- Multi-step booking flow (info → slots → payment)
-- Success/error handling with user feedback
+- Secure order creation with booking metadata
+- Payment signature verification (HMAC SHA256)
+- Automatic booking confirmation on payment success
+- Error handling and retry logic
 
 ## Getting Started
 
 ### 1. Install Dependencies
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ### 2. Configure Environment Variables
 
 Copy `.env.local.example` to `.env.local` and fill in your credentials:
 
-\`\`\`bash
+```bash
 cp .env.local.example .env.local
-\`\`\`
+```
 
 **Required variables:**
 
 - `MONGODB_URI` - MongoDB Atlas connection string
-- `NEXT_PUBLIC_RAZORPAY_KEY_ID` - Razorpay test/live key ID
-- `RAZORPAY_KEY_SECRET` - Razorpay secret key
-- `RAZORPAY_WEBHOOK_SECRET` - Webhook verification secret
+- `NEXT_PUBLIC_RAZORPAY_KEY_ID` - Razorpay test/live key ID (for browser)
+- `RAZORPAY_KEY_ID` - Razorpay key ID (for server)
+- `RAZORPAY_KEY_SECRET` - Razorpay secret key (for signature verification)
+
+**Optional variables:**
+
 - `EMAIL_HOST`, `EMAIL_USER`, `EMAIL_PASS` - Zoho SMTP credentials
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_PRESET` - Cloudinary config
 - `NEXTAUTH_URL`, `NEXTAUTH_SECRET` - NextAuth configuration
 
-### 3. Seed Database
+### 3. Run Development Server
 
-Visit `/api/seed` once to populate sample doctors:
-\`\`\`bash
+```bash
 npm run dev
+```
 
-# Then open: http://localhost:3000/api/seed
-
-\`\`\`
-
-### 4. Run Development Server
-
-\`\`\`bash
-npm run dev
-\`\`\`
 Open [http://localhost:3000](http://localhost:3000)
 
-### 5. Build for Production
+### 4. Add Sample Therapists
 
-\`\`\`bash
+Visit the admin panel at `/admin/therapists` and create sample therapist profiles:
+
+1. Click "Add Therapist"
+2. Fill in details: name, designation, photo URL, session price, bio, specialties
+3. Click "Create Therapist"
+
+### 5. Test Booking Flow
+
+1. Navigate to the "Find a Specialist" section on the home page
+2. Search for a therapist by name or designation
+3. Click "Book" on a therapist card
+4. In the payment modal, click "Pay ₹[amount]"
+5. Complete payment through Razorpay test flow
+
+### 6. Build for Production
+
+```bash
 npm run build
 npm start
-\`\`\`
+```
 
 ## Project Structure
 
-\`\`\`
+```
 src/
 ├── app/
-│ ├── api/
-│ │ ├── doctors/ # Fetch physiologist directory
-│ │ ├── slots/ # Available slot filtering
-│ │ ├── payment/
-│ │ │ ├── order/ # Razorpay order creation (gatekeeper)
-│ │ │ └── verify/ # Payment signature verification
-│ │ ├── webhooks/
-│ │ │ └── razorpay/ # Ghost payment recovery + refunds
-│ │ └── seed/ # Database seeding endpoint
-│ ├── globals.css # Tailwind + custom brand classes
-│ ├── layout.tsx # Root layout with Manrope font
-│ └── page.tsx # Home page with hero + directory
+│   ├── api/
+│   │   ├── therapists/
+│   │   │   └── route.ts              # GET public therapist list (with search)
+│   │   ├── admin/
+│   │   │   └── therapists/
+│   │   │       ├── route.ts          # POST create, GET admin list
+│   │   │       └── [id]/route.ts     # GET/PUT/DELETE single therapist
+│   │   └── payments/
+│   │       ├── create-order/route.ts # POST create Razorpay order
+│   │       └── verify/route.ts       # POST verify payment + create booking
+│   ├── admin/
+│   │   └── therapists/
+│   │       └── page.tsx              # Admin therapist management UI
+│   ├── globals.css                   # Tailwind + custom brand classes
+│   ├── layout.tsx                    # Root layout
+│   └── page.tsx                      # Home page with sections
 ├── components/
-│ ├── DoctorDirectory.tsx # Doctor list + state management
-│ ├── DoctorCard.tsx # Individual doctor cards
-│ ├── BookingModal.tsx # Multi-step booking flow + Razorpay
-│ └── ChatbotPanel.tsx # PHQ-2/GAD-2 screening interface
+│   ├── TherapistsSection.tsx         # Main therapist listing section
+│   ├── TherapistCard.tsx             # Individual therapist card
+│   ├── TherapistPaymentModal.tsx     # Payment confirmation modal
+│   ├── ServicesMarquee.tsx           # Services carousel
+│   ├── ServiceDetailModal.tsx        # Service detail modal
+│   ├── HeroSlideshow.tsx             # Hero banner
+│   └── ChatbotPanel.tsx              # Screening chatbot
 ├── lib/
-│ ├── mongodb.ts # Mongoose connection utility
-│ ├── razorpay.ts # Razorpay client + helpers
-│ └── email.ts # Nodemailer Zoho SMTP
+│   ├── mongodb.ts                    # Mongoose connection utility
+│   └── email.ts                      # Zoho email helper
 ├── models/
-│ ├── Physiologist.ts # Doctor schema
-│ └── Booking.ts # Booking schema (compound unique index)
-├── scripts/
-│ └── seedDoctors.ts # Sample data generator
-└── types/
-└── razorpay.d.ts # Razorpay window object types
-\`\`\`
+│   ├── Therapist.ts                  # Therapist schema
+│   ├── Booking.ts                    # Booking schema
+│   ├── Physiologist.ts               # Legacy physiologist schema
+│   └── HeroBanner.ts                 # Hero banner schema
+└── data/
+    └── servicesData.ts               # 6 core services data
+```
 
 ## API Endpoints
 
-### Public
+### Public Endpoints
 
-- `GET /api/doctors` - List all verified physiologists
-- `GET /api/doctors/[id]` - Single doctor details
-- `GET /api/slots?doctorId=X&date=YYYY-MM-DD` - Available slots
-- `POST /api/payment/order` - Create Razorpay order (gatekeeper check)
-- `POST /api/payment/verify` - Verify payment + confirm booking
-- `POST /api/webhooks/razorpay` - Webhook handler (ghost payment recovery)
+#### Therapists
 
-### Admin (one-time)
+- `GET /api/therapists` - List all active therapists
+- `GET /api/therapists?q=query` - Search therapists by name or designation
 
-- `GET /api/seed` - Populate database with sample doctors
+#### Payments
 
-## Testing Scenarios
+- `POST /api/payments/create-order` - Create Razorpay order
 
-### Double-Booking Race Test
+  - Body: `{ therapistId, therapistName, amount }`
+  - Returns: Razorpay order object
 
-1. Open two browser tabs
-2. Navigate to same doctor + date + slot
-3. Initiate payment in both tabs simultaneously
-4. **Expected:** One succeeds, other triggers automatic refund with error message
+- `POST /api/payments/verify` - Verify payment and create booking
+  - Body: `{ orderId, paymentId, signature, therapistId, amount, userId? }`
+  - Returns: Booking confirmation with ID
 
-### Ghost Payment Test
+### Admin Endpoints
 
-1. Start booking flow, complete payment
-2. Close browser before payment callback executes
-3. **Expected:** Webhook automatically creates booking from order notes within seconds
+#### Therapists Management
 
-### Webhook Recovery Test
+- `POST /api/admin/therapists` - Create new therapist
 
-1. Simulate network failure after payment
-2. Razorpay webhook fires with `payment.captured` event
-3. **Expected:** Booking created with `bookingSource: 'WEBHOOK'`, confirmation email sent
+  - Body: `{ name, designation, photo, price, bio?, specialties?, isActive? }`
+  - Returns: Created therapist
+
+- `GET /api/admin/therapists` - List all therapists (including inactive)
+
+  - Returns: Array of all therapists
+
+- `GET /api/admin/therapists/[id]` - Get single therapist
+
+  - Returns: Therapist details
+
+- `PUT /api/admin/therapists/[id]` - Update therapist
+
+  - Body: Partial therapist object with fields to update
+  - Returns: Updated therapist
+
+- `DELETE /api/admin/therapists/[id]` - Delete therapist
+  - Returns: Success message
+
+## Database Models
+
+### Therapist
+
+```typescript
+{
+  _id: ObjectId
+  name: string (required)
+  designation: string (required)
+  photo: string (required) - URL to therapist photo
+  price: number (required) - Session price in ₹
+  bio?: string
+  specialties?: string[]
+  isActive: boolean (default: true)
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### Booking
+
+```typescript
+{
+  _id: ObjectId
+  therapistId: ObjectId (reference to Therapist)
+  userId?: ObjectId
+  paymentId: string (Razorpay payment ID)
+  orderId: string (Razorpay order ID)
+  amount: number
+  status: string ("confirmed", "pending", "cancelled")
+  bookingDate: Date
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+## Payment Flow
+
+1. **User initiates booking:**
+
+   - Clicks "Book" on therapist card
+   - TherapistPaymentModal opens with booking details
+
+2. **Create order:**
+
+   - Frontend calls `POST /api/payments/create-order`
+   - Backend creates Razorpay order with amount in paise
+   - Returns order ID
+
+3. **Razorpay checkout:**
+
+   - Razorpay SDK loaded dynamically
+   - Checkout modal opens for payment
+   - User completes payment
+
+4. **Payment verification:**
+
+   - Razorpay sends payment response
+   - Frontend calls `POST /api/payments/verify`
+   - Backend verifies HMAC SHA256 signature
+   - On success: Booking record created in MongoDB
+   - Returns booking confirmation
+
+5. **User confirmation:**
+   - Success message displayed
+   - Modal closes
+   - Optional: Email confirmation sent
+
+## Razorpay Test Credentials
+
+For testing, use these credentials:
+
+**Card Number:** 4111 1111 1111 1111
+**Expiry:** 02/25
+**CVV:** 123
 
 ## Design System (Medical Professional Palette)
 
-| Color Name    | Hex Code  | Usage                                 |
-| ------------- | --------- | ------------------------------------- |
-| Midnight Blue | `#1c4966` | Headers, navbars, active states       |
-| Healing Green | `#5f8b70` | "Book Now" buttons, success messages  |
-| Calm Blue     | `#8fbdd7` | Doctor cards (top), user chat bubbles |
-| Gainsboro     | `#e0dfdd` | Page backgrounds, disabled states     |
+| Color Name    | Hex Code  | Usage                             |
+| ------------- | --------- | --------------------------------- |
+| Midnight Blue | `#1c4966` | Headers, navbars, primary actions |
+| Healing Green | `#5f8b70` | "Book Now" buttons, success text  |
+| Calm Blue     | `#8fbdd7` | Cards, secondary elements         |
+| Gainsboro     | `#e0dfdd` | Backgrounds, borders              |
 
 **Typography:**
 
-- Display: Work Sans
-- Body: Manrope
+- Headers: Work Sans (Bold)
+- Body: Manrope (Regular/Medium)
 
-## Deployment Notes
+## Deployment
 
-### Vercel Configuration
+### Vercel
 
-1. Add all environment variables in Vercel dashboard
-2. Set `NEXTAUTH_URL` to your production domain
-3. Configure Hostinger DNS:
-   - A Record: `@` → `76.76.21.21`
-   - CNAME: `www` → `cname.vercel-dns.com`
+1. Push to GitHub
+2. Connect repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy (automatic on main branch push)
+
+### Environment Variables in Production
+
+- `MONGODB_URI` - Production MongoDB connection
+- `RAZORPAY_KEY_ID` - Live Razorpay key ID
+- `RAZORPAY_KEY_SECRET` - Live Razorpay secret
+- `NEXT_PUBLIC_RAZORPAY_KEY_ID` - Live Razorpay key ID (public)
 
 ### MongoDB Atlas
 
-- Use M0 Free Tier cluster
-- Whitelist Vercel IP ranges or use `0.0.0.0/0` (with strong password)
+- Use M0 Free or M2 paid cluster
+- Whitelist Vercel IP: `0.0.0.0/0` (with strong password) or specific IPs
+- Keep backups enabled
 
-### Razorpay Webhook
+### Razorpay
 
-- Add webhook URL in Razorpay Dashboard: `https://yourdomain.com/api/webhooks/razorpay`
-- Subscribe to `payment.captured` event
-- Use Port 443 (HTTPS required)
-
-### Zoho Mail
-
-- Enable SMTP in Zoho admin panel
-- Use app-specific password if 2FA is enabled
-- Test with `/api/seed` (triggers console logs)
+- Switch to Live mode for production
+- Update webhook URL in dashboard if using webhooks
+- Use live keys in `.env.local` for production
 
 ## Troubleshooting
 
-**Build errors about missing env vars:**
+### Build Errors
 
-- Env vars are optional at build time; they're checked at runtime in API routes
+**"Cannot find module '@/lib/mongodb'"**
 
-**Tailwind @apply warnings in IDE:**
+- Ensure TypeScript paths are configured in `tsconfig.json`
+- Restart development server
 
-- False positives; Tailwind directives are valid
+### Database Issues
 
-**MongoDB connection fails:**
+**MongoDB connection timeout**
 
-- Check IP whitelist in Atlas
-- Verify connection string format
-- Ensure network allows outbound 27017
+- Check connection string in `.env.local`
+- Verify IP whitelist in MongoDB Atlas
+- Ensure network connectivity
 
-**Razorpay payments not working:**
+### Payment Issues
 
-- Verify test keys are set for dev environment
-- Check browser console for Razorpay script load errors
-- Ensure `NEXT_PUBLIC_` prefix on `RAZORPAY_KEY_ID`
+**"Invalid Razorpay key"**
 
-**Webhook not firing:**
+- Verify `NEXT_PUBLIC_RAZORPAY_KEY_ID` is set
+- Check it matches your Razorpay dashboard
 
-- Use ngrok or similar for local testing
-- Check Razorpay Dashboard → Webhooks → Logs
-- Verify webhook secret matches `.env.local`
+**Payment verification failed**
+
+- Verify `RAZORPAY_KEY_SECRET` is correct
+- Check signature generation logic uses correct order
+
+### API Errors
+
+**404 on therapist endpoints**
+
+- Ensure MongoDB is connected
+- Check database has therapist records
+- Visit `/admin/therapists` to add therapists
+
+## Documentation
+
+For detailed documentation on the therapist booking system, see [THERAPIST_SYSTEM.md](./THERAPIST_SYSTEM.md)
 
 ## License
 
-Proprietary - Version 7.0 Final Master Release
+Proprietary - Relicus Platform v8.0
+
+## Support
+
+For issues or questions:
+
+1. Check the Troubleshooting section above
+2. Review API examples in this README
+3. Check browser console for client-side errors
+4. Check server logs for backend errors

@@ -6,6 +6,7 @@ import Link from "next/link";
 import DoctorDirectory from "@/components/DoctorDirectory";
 import ChatbotPanel from "@/components/ChatbotPanel";
 import ServicesMarquee from "@/components/ServicesMarquee";
+import HeroSlideshow from "@/components/HeroSlideshow";
 
 export const dynamic = "force-dynamic";
 
@@ -82,8 +83,9 @@ export default function HomePage() {
 
     return () => {
       const win = window as any;
-      if (win?.ScrollSmoother?.get()) {
-        win.ScrollSmoother.get().kill();
+      const smoother = win?.ScrollSmoother?.get?.();
+      if (smoother && typeof smoother.kill === "function") {
+        smoother.kill();
       }
       smootherInitialized.current = false;
     };
@@ -154,7 +156,10 @@ export default function HomePage() {
                       Healing Begins With a Single Conversation.
                     </span>
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-dark leading-tight">
-                      When Life Feels Heavy, Let Us Help You Carry It.
+                      When Life Feels Heavy,{" "}
+                      <span className="text-brand-green">
+                        Let Us Help You Carry It.
+                      </span>
                     </h1>
                     <p className="text-brand-dark/80 text-base md:text-lg">
                       Welcome to Relicus. We provide a safe, non-judgmental
@@ -175,14 +180,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-white">
-                      <img
-                        src="https://res.cloudinary.com/dqpzzx5jb/image/upload/v1765205630/WhatsApp_Image_2025-12-08_at_12.52.22_231bc71e_fnipo3.jpg"
-                        alt="Relicus care"
-                        className="h-full w-full object-cover object-center"
-                        loading="lazy"
-                      />
-                    </div>
+                    <HeroSlideshow />
                   </div>
                 </div>
               </div>

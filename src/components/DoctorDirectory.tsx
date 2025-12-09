@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import DoctorCard from "@/components/DoctorCard";
 import BookingModal from "@/components/BookingModal";
@@ -23,25 +23,36 @@ interface DoctorDirectoryProps {
   healthScore?: number;
 }
 
-export default function DoctorDirectory({
-  healthScore,
-}: DoctorDirectoryProps) {
+export default function DoctorDirectory({ healthScore }: DoctorDirectoryProps) {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
-  const [filterByName, setFilterByName] = useState(false);
-  const [filterByService, setFilterByService] = useState(false);
 
   useEffect(() => {
     fetchDoctors();
   }, []);
 
+  const applyFilters = useCallback(() => {
+    const q = searchKeyword.trim().toLowerCase();
+    if (!q) {
+      setFilteredDoctors(doctors);
+      return;
+    }
+
+    const filtered = doctors.filter(
+      (doctor) =>
+        (doctor.name || "").toLowerCase().includes(q) ||
+        (doctor.specialty || "").toLowerCase().includes(q)
+    );
+
+    setFilteredDoctors(filtered);
+  }, [doctors, searchKeyword]);
+
   useEffect(() => {
     applyFilters();
-  }, [searchKeyword, filterByName, filterByService, doctors]);
+  }, [applyFilters]);
 
   const fetchDoctors = async () => {
     try {
@@ -53,31 +64,6 @@ export default function DoctorDirectory({
     } finally {
       setLoading(false);
     }
-  };
-
-  const applyFilters = () => {
-    let filtered = [...doctors];
-
-    if (searchKeyword.trim()) {
-      if (filterByName) {
-        filtered = filtered.filter((doctor) =>
-          doctor.name.toLowerCase().includes(searchKeyword.toLowerCase())
-        );
-      } else if (filterByService) {
-        filtered = filtered.filter((doctor) =>
-          doctor.specialty.toLowerCase().includes(searchKeyword.toLowerCase())
-        );
-      } else {
-        // Search in both name and service if no specific filter selected
-        filtered = filtered.filter(
-          (doctor) =>
-            doctor.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-            doctor.specialty.toLowerCase().includes(searchKeyword.toLowerCase())
-        );
-      }
-    }
-
-    setFilteredDoctors(filtered);
   };
 
   const handleBookingComplete = () => {
@@ -96,54 +82,34 @@ export default function DoctorDirectory({
   }
 
   return (
-    <div className="bg-brand-light">
+    <div className="bg-white">
       <section id="book" className="space-y-6">
-        {/* Search and Filter Section */}
-        <div className="bg-white rounded-xl p-4 border border-brand-light/60 shadow-sm">
-          <div className="flex gap-3 items-center mb-3">
-            <input
-              type="text"
-              placeholder="Search therapist name or service"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="flex-1 px-4 py-2 border border-brand-light rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green text-brand-dark"
-            />
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="w-10 h-10 flex items-center justify-center border border-brand-light rounded-lg hover:bg-brand-light transition text-brand-dark"
-            >
-              #
-            </button>
-          </div>
-
-          {showFilters && (
-            <div className="space-y-2 pt-2 border-t border-brand-light">
-              <label className="flex items-center gap-2 text-sm text-brand-dark cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filterByName}
-                  onChange={(e) => {
-                    setFilterByName(e.target.checked);
-                    if (e.target.checked) setFilterByService(false);
-                  }}
-                  className="w-4 h-4 text-brand-green focus:ring-brand-green"
+        {/* Search Section (pill) */}
+        <div className="w-full">
+          <div className="mx-auto max-w-md w-full">
+            <div className="bg-[#f7f7f7] border border-[#dcdcdc] rounded-full px-4 py-2 flex items-center gap-3 shadow-none">
+              <svg
+                className="w-4 h-4 text-gray-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-5.2-5.2m0 0A6 6 0 105.8 5.8a6 6 0 0010 10z"
                 />
-                Search therapist by name
-              </label>
-              <label className="flex items-center gap-2 text-sm text-brand-dark cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filterByService}
-                  onChange={(e) => {
-                    setFilterByService(e.target.checked);
-                    if (e.target.checked) setFilterByName(false);
-                  }}
-                  className="w-4 h-4 text-brand-green focus:ring-brand-green"
-                />
-                Search therapist by service
-              </label>
+              </svg>
+              <input
+                type="text"
+                placeholder="Search therapist name or service"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="flex-1 text-sm bg-transparent focus:outline-none placeholder:text-gray-400 text-gray-800"
+              />
             </div>
-          )}
+          </div>
         </div>
 
         {/* Doctors List */}
