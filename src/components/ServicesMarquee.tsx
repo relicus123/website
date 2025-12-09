@@ -143,6 +143,8 @@ export default function ServicesMarquee() {
   );
 }
 
+import Image from "next/image";
+
 function ServiceCard({
   service,
   onSelect,
@@ -153,12 +155,13 @@ function ServiceCard({
   return (
     <button onClick={onSelect} className="service-card group cursor-pointer">
       <div className="card h-full flex flex-col overflow-hidden shadow-md border border-brand-light/70 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group-hover:scale-105">
-        <div className="h-48 w-full overflow-hidden bg-white">
-          <img
+        <div className="h-48 w-full overflow-hidden bg-white relative">
+          <Image
             src={service.image}
             alt={service.title}
-            className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300"
-            loading="lazy"
+            fill
+            className="object-cover group-hover:scale-110 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, 320px"
           />
         </div>
         <div className="p-4">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Image from "next/image";
 
 interface Banner {
   _id: string;
@@ -10,10 +11,16 @@ interface Banner {
   link?: string;
 }
 
+const DEFAULT_BANNER: Banner = {
+  _id: "default",
+  title: "Relicus Care",
+  imageUrl:
+    "https://res.cloudinary.com/dqpzzx5jb/image/upload/v1765205630/WhatsApp_Image_2025-12-08_at_12.52.22_231bc71e_fnipo3.jpg",
+};
+
 export default function HeroSlideshow() {
-  const [banners, setBanners] = useState<Banner[]>([]);
+  const [banners, setBanners] = useState<Banner[]>([DEFAULT_BANNER]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBanners();
@@ -24,30 +31,11 @@ export default function HeroSlideshow() {
       const response = await axios.get("/api/banners");
       if (response.data.success && response.data.banners.length > 0) {
         setBanners(response.data.banners);
-      } else {
-        // Fallback to default image
-        setBanners([
-          {
-            _id: "default",
-            title: "Relicus Care",
-            imageUrl:
-              "https://res.cloudinary.com/dqpzzx5jb/image/upload/v1765205630/WhatsApp_Image_2025-12-08_at_12.52.22_231bc71e_fnipo3.jpg",
-          },
-        ]);
       }
+      // If fetch fails or empty, we keep the default banner (already in state)
     } catch (error) {
       console.error("Failed to fetch banners:", error);
-      // Fallback to default image
-      setBanners([
-        {
-          _id: "default",
-          title: "Relicus Care",
-          imageUrl:
-            "https://res.cloudinary.com/dqpzzx5jb/image/upload/v1765205630/WhatsApp_Image_2025-12-08_at_12.52.22_231bc71e_fnipo3.jpg",
-        },
-      ]);
-    } finally {
-      setLoading(false);
+      // Keep default banner
     }
   };
 
@@ -73,14 +61,6 @@ export default function HeroSlideshow() {
     setCurrentIndex((prev) => (prev + 1) % banners.length);
   };
 
-  if (loading) {
-    return (
-      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-brand-light animate-pulse" />
-    );
-  }
-
-  const currentBanner = banners[currentIndex];
-
   return (
     <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-white group">
       {/* Slideshow Images */}
@@ -93,21 +73,32 @@ export default function HeroSlideshow() {
             }`}
           >
             {banner.link ? (
-              <a href={banner.link} target="_blank" rel="noopener noreferrer">
-                <img
+              <a
+                href={banner.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full h-full relative"
+              >
+                <Image
                   src={banner.imageUrl}
                   alt={banner.title}
-                  className="h-full w-full object-cover object-center"
-                  loading={index === 0 ? "eager" : "lazy"}
+                  fill
+                  className="object-cover object-center"
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </a>
             ) : (
-              <img
-                src={banner.imageUrl}
-                alt={banner.title}
-                className="h-full w-full object-cover object-center"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
+              <div className="w-full h-full relative">
+                <Image
+                  src={banner.imageUrl}
+                  alt={banner.title}
+                  fill
+                  className="object-cover object-center"
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
             )}
           </div>
         ))}
@@ -118,7 +109,7 @@ export default function HeroSlideshow() {
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-brand-dark p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-brand-dark p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
             aria-label="Previous slide"
           >
             <svg
@@ -137,7 +128,7 @@ export default function HeroSlideshow() {
           </button>
           <button
             onClick={goToNext}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-brand-dark p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-brand-dark p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
             aria-label="Next slide"
           >
             <svg
@@ -159,7 +150,7 @@ export default function HeroSlideshow() {
 
       {/* Dots Indicator (only if multiple banners) */}
       {banners.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           {banners.map((_, index) => (
             <button
               key={index}
