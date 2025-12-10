@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="bg-brand-dark text-white mt-10">
@@ -24,9 +26,21 @@ export default function Footer() {
           <p className="font-semibold mb-3">Support</p>
           <ul className="space-y-2 text-sm text-white/80">
             <li>FAQs</li>
-            <li>Privacy Policy</li>
-            <li>Terms & Conditions</li>
-            <li>Refunds</li>
+            <li>
+              <Link href="/privacy-policy" className="hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms-conditions" className="hover:text-white transition-colors">
+                Terms & Conditions
+              </Link>
+            </li>
+            <li>
+              <Link href="/refund-policy" className="hover:text-white transition-colors">
+                Refunds
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="space-y-3">

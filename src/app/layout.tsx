@@ -4,6 +4,7 @@ import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GlobalScroll from "@/components/GlobalScroll";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -36,9 +37,11 @@ export default function RootLayout({
         className={`${inter.variable} ${poppins.variable} ${openSans.variable} ${sourceSans.variable}`}
       >
         <SessionProvider>
-          <Header />
-          <div className="pt-[85px]">{children}</div>
-          <Footer />
+          <GlobalScroll>
+            <Header />
+            <div className="pt-[85px]">{children}</div>
+            <Footer />
+          </GlobalScroll>
         </SessionProvider>
       </body>
     </html>
