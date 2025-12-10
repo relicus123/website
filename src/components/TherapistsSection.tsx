@@ -82,13 +82,13 @@ export default function TherapistsSection() {
         id="therapists"
         className="bg-gradient-to-b from-brand-light/60 via-white to-brand-light/60 border-y border-brand-light/60"
       >
-        <div className="max-w-7xl mx-auto px-6 py-16 space-y-12">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16 space-y-8 md:space-y-12">
           {/* Header */}
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-dark">
+          <div className="text-center space-y-2 md:space-y-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-brand-dark">
               Our <span className="text-brand-green">Therapists</span>
             </h2>
-            <p className="text-base md:text-lg text-brand-dark/80 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base lg:text-lg text-brand-dark/80 max-w-3xl mx-auto leading-relaxed px-2">
               Meet our experienced and certified therapists dedicated to your
               well-being. Book a session today.
             </p>

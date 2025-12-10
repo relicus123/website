@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-brand-dark text-white mt-10">
-      <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
         <div>
           <p className="font-semibold mb-3">Services</p>
           <ul className="space-y-2 text-sm text-white/80">
@@ -27,17 +27,26 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-white/80">
             <li>FAQs</li>
             <li>
-              <Link href="/privacy-policy" className="hover:text-white transition-colors">
+              <Link
+                href="/privacy-policy"
+                className="hover:text-white transition-colors"
+              >
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/terms-conditions" className="hover:text-white transition-colors">
+              <Link
+                href="/terms-conditions"
+                className="hover:text-white transition-colors"
+              >
                 Terms & Conditions
               </Link>
             </li>
             <li>
-              <Link href="/refund-policy" className="hover:text-white transition-colors">
+              <Link
+                href="/refund-policy"
+                className="hover:text-white transition-colors"
+              >
                 Refunds
               </Link>
             </li>
@@ -61,7 +70,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="border-t border-white/20 py-4 text-center text-xs text-white/70">
+      <div className="border-t border-white/20 py-4 px-4 text-center text-xs text-white/70">
         © {new Date().getFullYear()} YourCare Platform. Built for reliable,
         conflict-free scheduling and payments.
       </div>

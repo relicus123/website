@@ -1,6 +1,6 @@
-# Relicus - Mental Health & Wellness Platform (v8.0)
+# Relicus - Mental Health & Wellness Platform (v9.0)
 
-Full-stack Next.js 14 platform for booking therapists with reliable Razorpay payments, comprehensive mental health services, and MongoDB Atlas backend.
+Full-stack Next.js 14 platform for booking therapists with reliable Razorpay payments, comprehensive mental health services, MongoDB Atlas backend, and **fully optimized for mobile devices**.
 
 ## Stack
 
@@ -9,8 +9,8 @@ Full-stack Next.js 14 platform for booking therapists with reliable Razorpay pay
 - **Database:** MongoDB Atlas (Mongoose ODM)
 - **Payments:** Razorpay (orders, signature verification)
 - **Email:** Zoho Mail via Nodemailer
-- **Images:** Local static assets (SVG & image files)
-- **Deployment:** Vercel-ready
+- **Images:** Next.js Image optimization with WebP/AVIF support
+- **Deployment:** Vercel-ready with performance optimizations
 
 ## Features
 
@@ -20,6 +20,7 @@ Full-stack Next.js 14 platform for booking therapists with reliable Razorpay pay
 - Horizontal scrolling carousel with manual + auto-scroll
 - Netflix-style service detail modals
 - Local SVG placeholder system for fast loading
+- **Mobile-optimized cards and navigation**
 
 ✅ **Therapist Booking System**
 
@@ -27,6 +28,7 @@ Full-stack Next.js 14 platform for booking therapists with reliable Razorpay pay
 - Therapist profiles: name, designation, specialties, session price, bio
 - Real-time search by name or specialty
 - Therapist admin panel for managing profiles
+- **Responsive layouts for all screen sizes**
 
 ✅ **Razorpay Payment Integration**
 
@@ -34,6 +36,15 @@ Full-stack Next.js 14 platform for booking therapists with reliable Razorpay pay
 - Payment signature verification (HMAC SHA256)
 - Automatic booking confirmation on payment success
 - Error handling and retry logic
+
+✅ **Mobile-First Design (NEW in v9.0)**
+
+- Hamburger navigation menu for mobile devices
+- Touch-friendly buttons (min 44px touch targets)
+- Responsive typography and spacing
+- Optimized images for mobile bandwidth
+- Fast loading on 3G/4G connections
+- Reduced motion support for accessibility
 
 ## Getting Started
 

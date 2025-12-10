@@ -63,12 +63,12 @@ const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-50px" },
-  transition: { duration: 0.2 }
+  transition: { duration: 0.2 },
 };
 
 const staggerContainer = {
   initial: {},
-  whileInView: { transition: { staggerChildren: 0.1 } }
+  whileInView: { transition: { staggerChildren: 0.1 } },
 };
 
 export default function HomeClient({ initialDoctors }: HomeClientProps) {
@@ -82,54 +82,57 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
     <>
       <main id="home" className="min-h-screen bg-brand-light">
         {/* Hero Banner */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="bg-brand-blue/15"
         >
-          <div className="max-w-7xl mx-auto px-6 py-10">
-            <div className="relative overflow-hidden rounded-2xl border border-brand-blue/30 shadow-sm bg-gradient-to-r from-brand-blue/50 via-white to-brand-light">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+            <div className="relative overflow-hidden rounded-xl md:rounded-2xl border border-brand-blue/30 shadow-sm bg-gradient-to-r from-brand-blue/50 via-white to-brand-light">
               <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,#1c4966,transparent_25%),radial-gradient(circle_at_80%_10%,#5f8b70,transparent_25%),radial-gradient(circle_at_50%_80%,#8fbdd7,transparent_25%)]" />
-              <div className="relative grid md:grid-cols-[1fr_1.05fr] items-center">
-                <motion.div 
+              <div className="relative grid grid-cols-1 md:grid-cols-[1fr_1.05fr] items-center">
+                <motion.div
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="p-8 space-y-4"
+                  className="p-5 md:p-8 space-y-3 md:space-y-4"
                 >
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/70 border border-brand-blue/40 text-xs font-semibold text-brand-dark">
                     Healing Begins With a Single Conversation.
                   </span>
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-dark leading-tight">
+                  <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-brand-dark leading-tight">
                     When Life Feels Heavy,{" "}
                     <span className="text-brand-green">
                       Let Us Help You Carry It.
                     </span>
                   </h1>
-                  <p className="text-brand-dark/80 text-base md:text-lg">
-                    Welcome to Relicus. We provide a safe, non-judgmental
-                    space where evidence-based psychology meets holistic
+                  <p className="text-brand-dark/80 text-sm md:text-base lg:text-lg leading-relaxed">
+                    Welcome to Relicus. We provide a safe, non-judgmental space
+                    where evidence-based psychology meets holistic
                     rehabilitation. Whether you are healing from trauma or
                     seeking growth, you don&apos;t have to do it alone.
                   </p>
-                  <div className="flex gap-3 flex-wrap">
-                    <a href="#book" className="button-primary">
+                  <div className="flex gap-2 md:gap-3 flex-wrap">
+                    <a
+                      href="#book"
+                      className="button-primary text-sm md:text-base px-4 md:px-5 py-2.5"
+                    >
                       Find a Specialist
                     </a>
                     <Link
                       href="/about"
-                      className="px-4 py-2 rounded-lg border border-brand-dark/30 text-brand-dark hover:border-brand-dark transition"
+                      className="px-4 md:px-5 py-2.5 text-sm md:text-base rounded-lg border border-brand-dark/30 text-brand-dark hover:border-brand-dark transition"
                     >
                       Our Story
                     </Link>
                   </div>
                 </motion.div>
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
-                  className="p-6"
+                  className="p-4 md:p-6"
                 >
                   <HeroSlideshow />
                 </motion.div>
@@ -139,22 +142,22 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
         </motion.section>
 
         <motion.div
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
         >
           <ServicesMarquee />
         </motion.div>
 
         {/* Doctor Directory */}
-        <section id="therapists" className="bg-white py-10">
-          <div className="max-w-7xl mx-auto px-6 space-y-6">
+        <section id="therapists" className="bg-white py-6 md:py-10">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-4 md:space-y-6">
             <motion.div
-               variants={fadeInUp}
-               initial="initial"
-               whileInView="whileInView"
-               viewport={{ once: true }}
+              variants={fadeInUp}
+              initial="initial"
+              whileInView="whileInView"
+              viewport={{ once: true }}
             >
               <DoctorDirectory
                 healthScore={healthScore}
@@ -163,24 +166,24 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
             </motion.div>
 
             {/* Mid-page CTA */}
-            <motion.div 
+            <motion.div
               variants={fadeInUp}
               initial="initial"
               whileInView="whileInView"
               viewport={{ once: true }}
-              className="rounded-2xl bg-brand-blue/25 border border-brand-blue/40 p-6 flex flex-col md:flex-row items-center justify-between gap-4"
+              className="rounded-xl md:rounded-2xl bg-brand-blue/25 border border-brand-blue/40 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4"
             >
-              <div>
-                <p className="text-sm text-brand-dark/80">
+              <div className="text-center md:text-left">
+                <p className="text-xs md:text-sm text-brand-dark/80">
                   Need help choosing?
                 </p>
-                <h3 className="text-xl font-semibold text-brand-dark">
+                <h3 className="text-lg md:text-xl font-semibold text-brand-dark">
                   Still unsure which help to take?
                 </h3>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2 md:gap-3 flex-wrap justify-center">
                 <button
-                  className="px-4 py-2 rounded-lg bg-white text-brand-dark border border-brand-light hover:border-brand-dark transition"
+                  className="px-4 py-2.5 text-sm md:text-base rounded-lg bg-white text-brand-dark border border-brand-light hover:border-brand-dark transition"
                   onClick={() => {
                     const chatbotButton = document.querySelector(
                       'button[class*="fixed bottom-6 right-6"]'
@@ -190,7 +193,7 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
                 >
                   Take assessment
                 </button>
-                <a href="#book" className="button-primary">
+                <a href="#book" className="button-primary text-sm md:text-base">
                   Talk to an expert
                 </a>
               </div>
@@ -199,15 +202,18 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
         </section>
 
         {/* FAQ */}
-        <section className="bg-brand-light py-16 border-t border-brand-light/60">
-          <motion.div 
-            className="max-w-4xl mx-auto px-6 space-y-8"
+        <section className="bg-brand-light py-8 md:py-16 border-t border-brand-light/60">
+          <motion.div
+            className="max-w-4xl mx-auto px-4 md:px-6 space-y-6 md:space-y-8"
             variants={staggerContainer}
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl font-bold text-brand-dark">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-2xl md:text-3xl font-bold text-brand-dark"
+            >
               Any Questions?
             </motion.h2>
             <motion.div variants={fadeInUp} className="space-y-0">
@@ -216,13 +222,13 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
                   key={item.q}
                   className="group border-b border-gray-200"
                 >
-                  <summary className="flex items-center justify-between py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                    <span className="text-lg font-medium text-brand-dark group-hover:text-brand-blue transition-colors">
+                  <summary className="flex items-center justify-between py-4 md:py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden touch-manipulation">
+                    <span className="text-base md:text-lg font-medium text-brand-dark group-hover:text-brand-blue transition-colors pr-4">
                       {item.q}
                     </span>
-                    <ChevronRightIcon className="w-5 h-5 text-brand-dark transition-transform duration-300 group-open:rotate-90" />
+                    <ChevronRightIcon className="w-5 h-5 text-brand-dark transition-transform duration-300 group-open:rotate-90 flex-shrink-0" />
                   </summary>
-                  <div className="pb-5 text-brand-dark/70 leading-relaxed">
+                  <div className="pb-4 md:pb-5 text-sm md:text-base text-brand-dark/70 leading-relaxed">
                     {item.a}
                   </div>
                 </details>

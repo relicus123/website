@@ -22,13 +22,15 @@ export default function TherapistCard({
   onBook,
 }: TherapistCardProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6">
-      <div className="flex items-start justify-between gap-6">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 md:gap-6">
         {/* Left side - Information */}
-        <div className="flex-1 space-y-3">
+        <div className="flex-1 space-y-2 md:space-y-3 w-full sm:w-auto">
           <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">{name}</h3>
-            <p className="text-base text-gray-600">{designation}</p>
+            <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
+              {name}
+            </h3>
+            <p className="text-sm md:text-base text-gray-600">{designation}</p>
           </div>
 
           {specialties && specialties.length > 0 && (
@@ -67,8 +69,8 @@ export default function TherapistCard({
         </div>
 
         {/* Right side - Photo and Button */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-28 h-28 rounded-xl bg-blue-100 flex items-center justify-center overflow-hidden border border-blue-200">
+        <div className="flex sm:flex-col items-center gap-3 w-full sm:w-auto">
+          <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-xl bg-blue-100 flex items-center justify-center overflow-hidden border border-blue-200 flex-shrink-0">
             {photo ? (
               <img
                 src={photo}
@@ -77,7 +79,7 @@ export default function TherapistCard({
               />
             ) : (
               <svg
-                className="w-16 h-16 text-blue-400"
+                className="w-12 h-12 sm:w-16 sm:h-16 text-blue-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -90,10 +92,9 @@ export default function TherapistCard({
               </svg>
             )}
           </div>
-          <p className="text-xs text-gray-500">Photo</p>
           <button
             onClick={() => onBook(id, name, price)}
-            className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
+            className="px-5 md:px-6 py-2.5 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-semibold rounded-lg text-sm transition-colors duration-200 shadow-sm hover:shadow-md active:scale-95 flex-1 sm:flex-initial w-full sm:w-auto"
           >
             Book now
           </button>

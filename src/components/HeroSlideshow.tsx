@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 
-
 interface Banner {
   _id: string;
   title: string;
@@ -60,7 +59,7 @@ export default function HeroSlideshow() {
   };
 
   return (
-    <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-white group">
+    <div className="relative w-full aspect-video md:aspect-[16/9] rounded-xl md:rounded-2xl overflow-hidden bg-white group">
       {/* Slideshow Images */}
       <div className="relative w-full h-full">
         {banners.map((banner, index) => (
@@ -99,7 +98,6 @@ export default function HeroSlideshow() {
               </div>
             )}
           </div>
-
         ))}
       </div>
 

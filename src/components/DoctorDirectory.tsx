@@ -23,9 +23,13 @@ interface DoctorDirectoryProps {
   initialDoctors?: Doctor[];
 }
 
-export default function DoctorDirectory({ healthScore, initialDoctors = [] }: DoctorDirectoryProps) {
+export default function DoctorDirectory({
+  healthScore,
+  initialDoctors = [],
+}: DoctorDirectoryProps) {
   const [doctors, setDoctors] = useState<Doctor[]>(initialDoctors);
-  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>(initialDoctors);
+  const [filteredDoctors, setFilteredDoctors] =
+    useState<Doctor[]>(initialDoctors);
   const [loading, setLoading] = useState(initialDoctors.length === 0);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -93,13 +97,13 @@ export default function DoctorDirectory({ healthScore, initialDoctors = [] }: Do
 
   return (
     <div className="bg-white">
-      <section id="book" className="space-y-6">
+      <section id="book" className="space-y-4 md:space-y-6">
         {/* Search Section (pill) */}
         <div className="w-full">
           <div className="mx-auto max-w-2xl w-full">
-            <div className="bg-[#f7f7f7] border border-[#dcdcdc] rounded-full px-6 py-4 flex items-center gap-3 shadow-none">
+            <div className="bg-[#f7f7f7] border border-[#dcdcdc] rounded-full px-4 md:px-6 py-3 md:py-4 flex items-center gap-2 md:gap-3 shadow-none">
               <svg
-                className="w-6 h-6 text-gray-700"
+                className="w-5 h-5 md:w-6 md:h-6 text-gray-700 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -116,7 +120,7 @@ export default function DoctorDirectory({ healthScore, initialDoctors = [] }: Do
                 placeholder="Search therapist name or service"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="flex-1 text-lg bg-transparent focus:outline-none placeholder:text-gray-400 text-gray-800"
+                className="flex-1 text-sm md:text-lg bg-transparent focus:outline-none placeholder:text-gray-400 text-gray-800"
               />
             </div>
           </div>
@@ -124,21 +128,24 @@ export default function DoctorDirectory({ healthScore, initialDoctors = [] }: Do
 
         {/* Doctors List */}
         {filteredDoctors.length === 0 ? (
-          <div className="bg-white rounded-lg p-8 text-center border border-brand-light/60">
-            <p className="text-slate-600">
+          <div className="bg-white rounded-lg p-6 md:p-8 text-center border border-brand-light/60">
+            <p className="text-sm md:text-base text-slate-600">
               {doctors.length === 0
                 ? "No doctors available. Please seed the database first."
                 : "No doctors found matching your search."}
             </p>
             {doctors.length === 0 && (
-              <a href="/api/seed" className="button-primary mt-4 inline-block">
+              <a
+                href="/api/seed"
+                className="button-primary mt-4 inline-block text-sm md:text-base"
+              >
                 Seed Database
               </a>
             )}
           </div>
         ) : (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {filteredDoctors.slice(0, visibleCount).map((doctor) => (
                 <DoctorCard
                   key={doctor._id}
@@ -155,7 +162,7 @@ export default function DoctorDirectory({ healthScore, initialDoctors = [] }: Do
               <div className="flex justify-center pt-4">
                 <button
                   onClick={handleViewMore}
-                  className="px-6 py-2.5 rounded-full bg-white border border-brand-dark/20 text-brand-dark font-medium hover:bg-brand-light hover:border-brand-dark/40 transition-all shadow-sm hover:shadow-md"
+                  className="px-5 md:px-6 py-2.5 text-sm md:text-base rounded-full bg-white border border-brand-dark/20 text-brand-dark font-medium hover:bg-brand-light hover:border-brand-dark/40 transition-all shadow-sm hover:shadow-md active:scale-95"
                 >
                   View More Therapists
                 </button>
