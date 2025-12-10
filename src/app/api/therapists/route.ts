@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Therapist from "@/models/Therapist";
 
+export const dynamic = "force-dynamic";
+
 // GET all therapists or search
 export async function GET(request: NextRequest) {
   try {

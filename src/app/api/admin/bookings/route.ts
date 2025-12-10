@@ -4,6 +4,8 @@ import Booking from "@/models/Booking";
 import Physiologist from "@/models/Physiologist";
 import mongoose from "mongoose";
 
+export const dynamic = "force-dynamic";
+
 type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
 
 function parseDate(value?: string | null) {

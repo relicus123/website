@@ -3,6 +3,8 @@ import connectDB from "@/lib/mongodb";
 import Booking from "@/models/Booking";
 import Physiologist from "@/models/Physiologist";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/slots
  * Returns available slots for a specific doctor on a given date
