@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface TherapistPaymentModalProps {
   isOpen: boolean;
@@ -27,6 +28,16 @@ export default function TherapistPaymentModal({
 }: TherapistPaymentModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
   const handlePayment = async () => {
     try {
@@ -114,55 +125,73 @@ export default function TherapistPaymentModal({
   };
 
   if (!isOpen) return null;
+  if (typeof window === "undefined") return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-6">
+  return createPortal(
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+      style={{ zIndex: 99999 }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 space-y-4 sm:space-y-6 relative max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div>
-          <h2 className="text-2xl font-bold text-brand-dark">
+          <h2 className="text-xl sm:text-2xl font-bold text-brand-dark">
             Confirm Booking
           </h2>
-          <p className="text-sm text-brand-dark/60">Complete your payment</p>
+          <p className="text-xs sm:text-sm text-brand-dark/60">
+            Complete your payment
+          </p>
         </div>
 
         {/* Booking Details */}
-        <div className="bg-brand-light/30 rounded-lg p-4 space-y-3">
-          <div className="flex justify-between">
-            <p className="text-brand-dark/70">Therapist:</p>
-            <p className="font-semibold text-brand-dark">{therapistName}</p>
+        <div className="bg-brand-light/30 rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3">
+          <div className="flex justify-between items-start gap-2">
+            <p className="text-sm sm:text-base text-brand-dark/70">
+              Therapist:
+            </p>
+            <p className="font-semibold text-sm sm:text-base text-brand-dark text-right">
+              {therapistName}
+            </p>
           </div>
-          <div className="flex justify-between border-t border-brand-light pt-3">
-            <p className="text-brand-dark/70">Session Price:</p>
-            <p className="text-xl font-bold text-brand-green">₹{amount}</p>
+          <div className="flex justify-between items-center gap-2 border-t border-brand-light pt-2 sm:pt-3">
+            <p className="text-sm sm:text-base text-brand-dark/70">
+              Session Price:
+            </p>
+            <p className="text-lg sm:text-xl font-bold text-brand-green">
+              ₹{amount}
+            </p>
           </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base">
             {error}
           </div>
         )}
 
         {/* Buttons */}
-        <div className="flex gap-3 pt-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 px-4 py-2 border border-brand-dark text-brand-dark hover:bg-brand-light/30 font-semibold rounded-lg transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 sm:py-2 border border-brand-dark text-brand-dark hover:bg-brand-light/30 font-semibold rounded-lg transition disabled:opacity-50 text-sm sm:text-base min-h-[44px] touch-manipulation"
           >
             Cancel
           </button>
           <button
             onClick={handlePayment}
             disabled={loading}
-            className="flex-1 px-4 py-2 bg-brand-green hover:bg-brand-dark text-white font-semibold rounded-lg transition disabled:opacity-50"
+            className="flex-1 px-4 py-3 sm:py-2 bg-brand-green hover:bg-brand-dark text-white font-semibold rounded-lg transition disabled:opacity-50 text-sm sm:text-base min-h-[44px] touch-manipulation"
           >
             {loading ? "Processing..." : "Pay ₹" + amount}
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

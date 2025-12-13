@@ -10,22 +10,10 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const {
-      name,
-      designation,
-      photo,
-      price,
-      bio,
-      specialties,
-      isActive,
-    } = body;
+    const { name, designation, photo, price, bio, specialties, isActive } =
+      body;
 
-    if (
-      !name ||
-      !designation ||
-      !photo ||
-      price === undefined
-    ) {
+    if (!name || !designation || !photo || price === undefined) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
@@ -60,9 +48,7 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const therapists = await Therapist.find({})
-      .sort({ createdAt: -1 })
-      .lean();
+    const therapists = await Therapist.find({}).sort({ createdAt: -1 }).lean();
 
     return NextResponse.json({ success: true, data: therapists });
   } catch (error) {

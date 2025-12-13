@@ -1,26 +1,31 @@
 # MongoDB Performance Optimization - COMPLETE ✅
 
 ## Overview
+
 Comprehensive performance optimization to eliminate 10-25 second API delays and achieve <300ms response times.
 
 ## Problems Fixed
 
 ### 1. **Repeated MongoDB Connections** ❌ → ✅
+
 - **Before:** Each API call created a new connection
 - **After:** Single cached connection with pooling
 - **Impact:** 90% reduction in connection overhead
 
 ### 2. **Slow Mongoose Queries** ❌ → ✅
+
 - **Before:** Full Mongoose document hydration on every query
 - **After:** `.lean()` queries returning plain JavaScript objects
 - **Impact:** 10x faster read operations
 
 ### 3. **No Connection Pooling** ❌ → ✅
+
 - **Before:** Single connection, serial requests
 - **After:** Connection pool with 10 max concurrent connections
 - **Impact:** 5x higher throughput
 
 ### 4. **Slow NextAuth Sessions** ❌ → ✅
+
 - **Before:** Database lookup on every auth check
 - **After:** JWT strategy with 30-day sessions
 - **Impact:** Auth checks now instant (<10ms)
@@ -34,18 +39,19 @@ Comprehensive performance optimization to eliminate 10-25 second API delays and 
 ```typescript
 // NEW: Performance-optimized connection options
 const MONGOOSE_OPTIONS = {
-  bufferCommands: false,          // Immediate errors, no buffering
-  maxPoolSize: 10,                // 10 concurrent connections
+  bufferCommands: false, // Immediate errors, no buffering
+  maxPoolSize: 10, // 10 concurrent connections
   serverSelectionTimeoutMS: 5000, // Fast timeout (5s)
-  socketTimeoutMS: 45000,         // Socket timeout
-  family: 4,                      // IPv4 (skip IPv6 delay)
-  connectTimeoutMS: 10000,        // Connection timeout
-  maxIdleTimeMS: 30000,           // Close idle after 30s
-  minPoolSize: 2,                 // Keep 2 connections ready
+  socketTimeoutMS: 45000, // Socket timeout
+  family: 4, // IPv4 (skip IPv6 delay)
+  connectTimeoutMS: 10000, // Connection timeout
+  maxIdleTimeMS: 30000, // Close idle after 30s
+  minPoolSize: 2, // Keep 2 connections ready
 };
 ```
 
 **Benefits:**
+
 - ✅ Single cached connection across all API routes
 - ✅ Fast reconnection with cached promise
 - ✅ Connection pool for concurrent requests
@@ -66,6 +72,7 @@ session: {
 ```
 
 **Changes:**
+
 - Removed console.log spam
 - Added `.lean()` to User.findOne()
 - JWT strategy (no DB lookup per request)
@@ -81,6 +88,7 @@ session: {
 Added `.lean()` to **all read queries** for 10x faster execution:
 
 #### Optimized Routes:
+
 - ✅ `/api/therapists` - Search & list queries
 - ✅ `/api/doctors` - Therapist listing
 - ✅ `/api/doctors/[id]` - Single doctor lookup
@@ -93,6 +101,7 @@ Added `.lean()` to **all read queries** for 10x faster execution:
 - ✅ `/api/admin/therapists/[id]` - Admin single
 
 **What is `.lean()`?**
+
 ```typescript
 // SLOW (500ms) - Full Mongoose document with methods
 const user = await User.findById(id);
@@ -106,30 +115,34 @@ const user = await User.findById(id).lean();
 ## Performance Metrics
 
 ### Before Optimization:
+
 - API response time: **10-25 seconds** 🐌
 - Auth session check: **200-500ms**
 - MongoDB connections: **Repeated on every request**
 - Concurrent request handling: **1 request at a time**
 
 ### After Optimization:
+
 - API response time: **<300ms** ⚡
-- Auth session check: **<10ms** 
+- Auth session check: **<10ms**
 - MongoDB connections: **1 cached connection with pool**
 - Concurrent request handling: **Up to 10 requests**
 
 ### Improvement Summary:
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| API Response | 10-25s | <300ms | **50-100x faster** |
-| Auth Check | 200-500ms | <10ms | **20-50x faster** |
-| DB Connections | Repeated | Cached | **∞ faster** |
-| Throughput | 1 req/s | 10+ req/s | **10x higher** |
+
+| Metric         | Before    | After     | Improvement        |
+| -------------- | --------- | --------- | ------------------ |
+| API Response   | 10-25s    | <300ms    | **50-100x faster** |
+| Auth Check     | 200-500ms | <10ms     | **20-50x faster**  |
+| DB Connections | Repeated  | Cached    | **∞ faster**       |
+| Throughput     | 1 req/s   | 10+ req/s | **10x higher**     |
 
 ---
 
 ## Testing the Improvements
 
 ### 1. Start Development Server
+
 ```bash
 npm run dev
 ```
@@ -137,26 +150,33 @@ npm run dev
 ### 2. Test API Response Times
 
 **Therapist Search:**
+
 ```bash
 curl http://localhost:3000/api/therapists?q=psychologist
 ```
+
 Expected: **<300ms**
 
 **Doctor List:**
+
 ```bash
 curl http://localhost:3000/api/doctors
 ```
+
 Expected: **<300ms**
 
 **Active Promotions:**
+
 ```bash
 curl http://localhost:3000/api/promotions/active
 ```
+
 Expected: **<100ms**
 
 ### 3. Check Connection Logs
 
 Open browser console or terminal logs:
+
 - **First request:** `✅ MongoDB connected with connection pooling`
 - **Subsequent requests:** No connection logs (using cached connection)
 
@@ -187,13 +207,15 @@ NEXT_PUBLIC_RAZORPAY_KEY_ID=your_razorpay_key
 ## Monitoring & Debugging
 
 ### Check Connection Pool Status
+
 ```typescript
 // Add to any API route for debugging
-console.log('Active connections:', mongoose.connection.readyState);
+console.log("Active connections:", mongoose.connection.readyState);
 // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
 ```
 
 ### Monitor Query Performance
+
 ```typescript
 // Temporary debug logging
 const start = Date.now();
@@ -230,17 +252,22 @@ console.log(`Query took: ${Date.now() - start}ms`);
 ## Support & Troubleshooting
 
 ### Issue: "MONGODB_URI not defined"
+
 **Solution:** Copy `.env.local.example` to `.env.local` and fill in values
 
 ### Issue: API still slow
+
 **Check:**
+
 1. MongoDB connection string is correct
 2. MongoDB Atlas is in same region as deployment
 3. No console.log spam in production
 4. `.lean()` is present on all read queries
 
 ### Issue: Auth not working
+
 **Check:**
+
 1. `NEXTAUTH_SECRET` is set in `.env.local`
 2. No database session strategy in NextAuth config
 3. JWT strategy is properly configured

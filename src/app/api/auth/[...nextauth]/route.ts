@@ -20,7 +20,9 @@ const authOptions = {
 
           await connectDB();
 
-          const user = await User.findOne({ email: credentials.email }).lean() as any;
+          const user = (await User.findOne({
+            email: credentials.email,
+          }).lean()) as any;
           if (!user) {
             return null;
           }

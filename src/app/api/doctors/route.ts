@@ -33,11 +33,11 @@ export async function GET(request: NextRequest) {
       qualifications: t.specialties || [],
       languages: ["English", "Hindi"], // Default value
       pricePerSession: t.price,
-      imageUrl: t.photo || PLACEHOLDER_IMAGES[index % PLACEHOLDER_IMAGES.length],
+      imageUrl:
+        t.photo || PLACEHOLDER_IMAGES[index % PLACEHOLDER_IMAGES.length],
       rating: 5.0, // Default value
       reviewCount: 0, // Default value
     }));
-
 
     return NextResponse.json(
       { success: true, doctors },
@@ -47,7 +47,6 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-
   } catch (error) {
     console.error("❌ Error fetching doctors:", error);
     return NextResponse.json(

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import axios from "axios";
 
 interface Doctor {
@@ -26,6 +27,14 @@ export default function BookingModal({
   const [step, setStep] = useState<
     "form" | "slots" | "processing" | "success" | "error"
   >("form");
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   // Form data
   const [clientName, setClientName] = useState("");
@@ -191,9 +200,18 @@ export default function BookingModal({
     return today.toISOString().split("T")[0];
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+  // Use portal to render at body level
+  if (typeof window === "undefined") return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+      style={{ zIndex: 99999 }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
         {/* Header */}
         <div className="bg-brand-dark text-white p-6 rounded-t-xl flex justify-between items-start">
           <div>
@@ -449,6 +467,7 @@ export default function BookingModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

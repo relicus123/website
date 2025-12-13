@@ -149,7 +149,10 @@ export async function POST(request: NextRequest) {
         });
 
         if (process.env.NODE_ENV === "development") {
-          console.log("✅ Booking recovered from webhook:", recoveredBooking._id);
+          console.log(
+            "✅ Booking recovered from webhook:",
+            recoveredBooking._id
+          );
         }
 
         // Send confirmation email
