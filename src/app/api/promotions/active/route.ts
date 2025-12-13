@@ -11,7 +11,9 @@ export async function GET() {
       isActive: true,
       startDate: { $lte: now },
       endDate: { $gte: now },
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .lean();
 
     return NextResponse.json(activeAds);
   } catch (error) {

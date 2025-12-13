@@ -6,27 +6,15 @@ import ChatbotPanel from "@/components/ChatbotPanel";
 import ServicesMarquee from "@/components/ServicesMarquee";
 import HeroSlideshow from "@/components/HeroSlideshow";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-
 import { motion } from "framer-motion";
+import { useGsapFadeUp } from "@/hooks/useGsapFadeUp";
+import { useGsapStagger } from "@/hooks/useGsapStagger";
+import { useGsapRevealImage } from "@/hooks/useGsapRevealImage";
+import { useScrollSections } from "@/hooks/useScrollSections";
 
-// ... existing imports
 
-interface Doctor {
-  _id: string;
-  name: string;
-  specialty: string;
-  bio?: string;
-  qualifications: string[];
-  languages: string[];
-  pricePerSession: number;
-  imageUrl?: string;
-  rating?: number;
-  reviewCount?: number;
-}
 
-interface HomeClientProps {
-  initialDoctors: Doctor[];
-}
+
 
 const faqs = [
   {
@@ -71,8 +59,29 @@ const staggerContainer = {
   whileInView: { transition: { staggerChildren: 0.1 } },
 };
 
-export default function HomeClient({ initialDoctors }: HomeClientProps) {
+export default function HomeClient() {
   const [healthScore, setHealthScore] = useState<number | undefined>(undefined);
+
+  // Initialize scroll-based animations for elements with data-fade-section attribute
+  useScrollSections();
+
+  // Create refs for hero section animations
+  const heroTitleRef = useGsapFadeUp<HTMLHeadingElement>({
+    duration: 0.7,
+    yOffset: 30,
+  });
+  const heroSubtitleRef = useGsapFadeUp<HTMLParagraphElement>({
+    delay: 0.2,
+    duration: 0.6,
+  });
+  const heroCtaRef = useGsapFadeUp<HTMLDivElement>({
+    delay: 0.3,
+    duration: 0.6,
+  });
+  const heroImageRef = useGsapRevealImage<HTMLDivElement>({
+    delay: 0.4,
+    duration: 0.8,
+  });
 
   const handleChatbotComplete = (score: number) => {
     setHealthScore(score);
@@ -92,28 +101,35 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
             <div className="relative overflow-hidden rounded-xl md:rounded-2xl border border-brand-blue/30 shadow-sm bg-gradient-to-r from-brand-blue/50 via-white to-brand-light">
               <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,#1c4966,transparent_25%),radial-gradient(circle_at_80%_10%,#5f8b70,transparent_25%),radial-gradient(circle_at_50%_80%,#8fbdd7,transparent_25%)]" />
               <div className="relative grid grid-cols-1 md:grid-cols-[1fr_1.05fr] items-center">
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                  className="p-5 md:p-8 space-y-3 md:space-y-4"
-                >
+                <div className="p-5 md:p-8 space-y-3 md:space-y-4">
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/70 border border-brand-blue/40 text-xs font-semibold text-brand-dark">
                     Healing Begins With a Single Conversation.
                   </span>
-                  <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-brand-dark leading-tight">
+                  <h1
+                    ref={heroTitleRef}
+                    id="heroTitle"
+                    className="text-2xl md:text-4xl lg:text-5xl font-bold text-brand-dark leading-tight"
+                  >
                     When Life Feels Heavy,{" "}
                     <span className="text-brand-green">
                       Let Us Help You Carry It.
                     </span>
                   </h1>
-                  <p className="text-brand-dark/80 text-sm md:text-base lg:text-lg leading-relaxed">
+                  <p
+                    ref={heroSubtitleRef}
+                    id="heroSubtitle"
+                    className="text-brand-dark/80 text-sm md:text-base lg:text-lg leading-relaxed"
+                  >
                     Welcome to Relicus. We provide a safe, non-judgmental space
                     where evidence-based psychology meets holistic
                     rehabilitation. Whether you are healing from trauma or
                     seeking growth, you don&apos;t have to do it alone.
                   </p>
-                  <div className="flex gap-2 md:gap-3 flex-wrap">
+                  <div
+                    ref={heroCtaRef}
+                    id="heroCTA"
+                    className="flex gap-2 md:gap-3 flex-wrap"
+                  >
                     <a
                       href="#book"
                       className="button-primary text-sm md:text-base px-4 md:px-5 py-2.5"
@@ -127,15 +143,10 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
                       Our Story
                     </Link>
                   </div>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="p-4 md:p-6"
-                >
+                </div>
+                <div ref={heroImageRef} id="heroImage" className="p-4 md:p-6">
                   <HeroSlideshow />
-                </motion.div>
+                </div>
               </div>
             </div>
           </div>
@@ -151,7 +162,11 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
         </motion.div>
 
         {/* Doctor Directory */}
-        <section id="therapists" className="bg-white py-6 md:py-10">
+        <section
+          id="therapists"
+          className="bg-white py-6 md:py-10"
+          data-fade-section
+        >
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-4 md:space-y-6">
             <motion.div
               variants={fadeInUp}
@@ -161,7 +176,6 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
             >
               <DoctorDirectory
                 healthScore={healthScore}
-                initialDoctors={initialDoctors}
               />
             </motion.div>
 
@@ -202,7 +216,10 @@ export default function HomeClient({ initialDoctors }: HomeClientProps) {
         </section>
 
         {/* FAQ */}
-        <section className="bg-brand-light py-8 md:py-16 border-t border-brand-light/60">
+        <section
+          className="bg-brand-light py-8 md:py-16 border-t border-brand-light/60"
+          data-fade-section
+        >
           <motion.div
             className="max-w-4xl mx-auto px-4 md:px-6 space-y-6 md:space-y-8"
             variants={staggerContainer}

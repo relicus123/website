@@ -1,81 +1,31 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import Lenis from "lenis";
 
 export default function GlobalScroll({ children }: { children: React.ReactNode }) {
-  const smootherInitialized = useRef(false);
-  const pathname = usePathname();
-
   useEffect(() => {
-    const loadScript = (src: string) =>
-      new Promise<void>((resolve, reject) => {
-        const existing = document.querySelector(`script[src="${src}"]`);
-        if (existing) {
-          existing.addEventListener("load", () => resolve());
-          resolve();
-          return;
-        }
-        const script = document.createElement("script");
-        script.src = src;
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`Failed to load ${src}`));
-        document.head.appendChild(script);
-      });
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
 
-    const initSmoother = async () => {
-      // Always re-check/re-init if needed, but here we just ensure scripts are loaded once
-      if (typeof window === "undefined") return;
-      const win = window as any;
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
 
-      if (!win.gsap) {
-        await loadScript(
-          "https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"
-        );
-      }
-      if (!win.ScrollSmoother) {
-        await loadScript(
-          "https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"
-        );
-      }
-      if (!win.ScrollTrigger) {
-         await loadScript(
-            "https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"
-         );
-      }
+    requestAnimationFrame(raf);
 
-      // Initialize ScrollSmoother
-      if (win.gsap && win.ScrollSmoother && !win.ScrollSmoother.get()) {
-        win.gsap.registerPlugin(win.ScrollSmoother, win.ScrollTrigger);
-        win.ScrollSmoother.create({
-          wrapper: "#smooth-wrapper",
-          content: "#smooth-content",
-          smooth: 1,
-          effects: true,
-          smoothTouch: 0.1,
-        });
-        smootherInitialized.current = true;
-      } else if (win.ScrollSmoother) {
-          // If it exists, maybe refresh?
-          const smoother = win.ScrollSmoother.get();
-          if(smoother) smoother.refresh();
-      }
+    return () => {
+      lenis.destroy();
     };
+  }, []);
 
-    // Small timeout to ensure DOM is ready
-    const timer = setTimeout(() => {
-        initSmoother().catch(() => {});
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [pathname]); 
-
-  return (
-    <div id="smooth-wrapper">
-      <div id="smooth-content">
-        {children}
-      </div>
-    </div>
-  );
+  return <>{children}</>;
 }

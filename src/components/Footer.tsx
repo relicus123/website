@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { FadeIn } from "@/components/ui/motion/FadeIn";
+import { Stagger } from "@/components/ui/motion/Stagger";
 
 export default function Footer() {
   return (
     <footer className="bg-brand-dark text-white mt-10">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-        <div>
+      <Stagger className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <FadeIn>
           <p className="font-semibold mb-3">Services</p>
           <ul className="space-y-2 text-sm text-white/80">
             <li>Online Therapy</li>
@@ -12,8 +14,8 @@ export default function Footer() {
             <li>Clinical Psychology</li>
             <li>Wellness Coaching</li>
           </ul>
-        </div>
-        <div>
+        </FadeIn>
+        <FadeIn>
           <p className="font-semibold mb-3">Company</p>
           <ul className="space-y-2 text-sm text-white/80">
             <li>About</li>
@@ -21,8 +23,8 @@ export default function Footer() {
             <li>Blogs</li>
             <li>Contact</li>
           </ul>
-        </div>
-        <div>
+        </FadeIn>
+        <FadeIn>
           <p className="font-semibold mb-3">Support</p>
           <ul className="space-y-2 text-sm text-white/80">
             <li>FAQs</li>
@@ -51,8 +53,8 @@ export default function Footer() {
               </Link>
             </li>
           </ul>
-        </div>
-        <div className="space-y-3">
+        </FadeIn>
+        <FadeIn className="space-y-3">
           <p className="font-semibold">Stay connected</p>
           <p className="text-sm text-white/80">
             24/7 chat support and expert guidance whenever you need it.
@@ -68,8 +70,8 @@ export default function Footer() {
               ig
             </span>
           </div>
-        </div>
-      </div>
+        </FadeIn>
+      </Stagger>
       <div className="border-t border-white/20 py-4 px-4 text-center text-xs text-white/70">
         © {new Date().getFullYear()} YourCare Platform. Built for reliable,
         conflict-free scheduling and payments.

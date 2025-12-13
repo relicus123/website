@@ -48,11 +48,14 @@ export default function AdMarquee() {
 
   if (loading || ads.length === 0) return null;
 
+  // Duplicate ads to create a seamless loop
+  const duplicatedAds = [...ads, ...ads];
+
   return (
     <div className="bg-brand-green text-white overflow-hidden py-3 relative z-40 w-full shadow-md flex items-center">
-      <div className="flex whitespace-nowrap gap-4 px-8 w-full animate-ticker hover:[animation-play-state:paused]">
-        {ads.map((ad) => (
-          <span key={ad._id} className="text-sm md:text-base flex-shrink-0">
+      <div className="flex whitespace-nowrap gap-4 px-8 w-max animate-scroll hover:[animation-play-state:paused]">
+        {duplicatedAds.map((ad, index) => (
+          <span key={`${ad._id}-${index}`} className="text-sm md:text-base flex-shrink-0 mx-4">
             {parseMarkdown(ad.content)}
           </span>
         ))}

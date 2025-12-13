@@ -5,6 +5,7 @@ import SessionProvider from "@/components/SessionProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GlobalScroll from "@/components/GlobalScroll";
+import "@/lib/gsapInit"; // Initialize GSAP globally
 
 const inter = Inter({
   subsets: ["latin"],

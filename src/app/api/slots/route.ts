@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch doctor details
-    const doctor = await Physiologist.findById(doctorId);
+    const doctor = await Physiologist.findById(doctorId).lean();
     if (!doctor) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
@@ -60,7 +60,9 @@ export async function GET(request: NextRequest) {
       doctor: doctorId,
       date: { $gte: startOfDay, $lte: endOfDay },
       paymentStatus: { $in: ["PAID", "PENDING"] },
-    }).select("timeSlot");
+    })
+      .select("timeSlot")
+      .lean();
 
     const bookedTimeSlots = bookedSlots.map((booking) => booking.timeSlot);
 

@@ -13,7 +13,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const doctor = await Physiologist.findById(params.id);
+    const doctor = await Physiologist.findById(params.id).lean();
 
     if (!doctor) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });

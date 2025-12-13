@@ -5,7 +5,7 @@ import Ad from "@/models/Ad";
 export async function GET() {
   try {
     await connectDB();
-    const ads = await Ad.find({}).sort({ createdAt: -1 });
+    const ads = await Ad.find({}).sort({ createdAt: -1 }).lean();
     return NextResponse.json(ads);
   } catch (error) {
     console.error("Error fetching ads:", error);

@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       date: { $gte: startOfDay, $lte: endOfDay },
       timeSlot: booking.timeSlot,
       paymentStatus: "PAID",
-    });
+    }).lean();
 
     if (conflictingBooking) {
       // SCENARIO 3: Race Condition - Slot stolen by another user
@@ -97,7 +97,9 @@ export async function POST(request: NextRequest) {
     booking.razorpaySignature = razorpay_signature;
     await booking.save();
 
-    console.log("✅ Payment verified and booking confirmed:", booking._id);
+    if (process.env.NODE_ENV === "development") {
+      console.log("✅ Payment verified and booking confirmed:", booking._id);
+    }
 
     // Send confirmation email
     try {

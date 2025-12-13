@@ -22,12 +22,15 @@ export async function GET(request: NextRequest) {
           { designation: { $regex: query, $options: "i" } },
         ],
         isActive: true,
-      }).select("name designation photo price bio specialties");
+      })
+        .select("name designation photo price bio specialties")
+        .lean();
     } else {
       // Get all active therapists
       therapists = await Therapist.find({ isActive: true })
         .select("name designation photo price bio specialties")
-        .sort({ name: 1 });
+        .sort({ name: 1 })
+        .lean();
     }
 
     return NextResponse.json({ success: true, data: therapists });

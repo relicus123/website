@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const therapists = await Therapist.find({ isActive: true }).sort({
-      createdAt: -1,
-    });
+    const therapists = await Therapist.find({ isActive: true })
+      .sort({ createdAt: -1 })
+      .lean();
 
     const PLACEHOLDER_IMAGES = [
       "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80",
@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     ];
 
     // Map Therapist model to the frontend's expected Doctor format
+    // Map Therapist model to the frontend's expected Doctor format
     const doctors = therapists.map((t, index) => ({
       _id: t._id,
       name: t.name,
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
       qualifications: t.specialties || [],
       languages: ["English", "Hindi"], // Default value
       pricePerSession: t.price,
-      imageUrl: PLACEHOLDER_IMAGES[index % PLACEHOLDER_IMAGES.length], // Use placeholder
+      imageUrl: t.photo || PLACEHOLDER_IMAGES[index % PLACEHOLDER_IMAGES.length],
       rating: 5.0, // Default value
       reviewCount: 0, // Default value
     }));

@@ -13,7 +13,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const banner = await HeroBanner.findById(params.id);
+    const banner = await HeroBanner.findById(params.id).lean();
 
     if (!banner) {
       return NextResponse.json({ error: "Banner not found" }, { status: 404 });

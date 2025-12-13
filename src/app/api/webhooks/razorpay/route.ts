@@ -31,7 +31,9 @@ export async function POST(request: NextRequest) {
     }
 
     const event = JSON.parse(rawBody);
-    console.log("📥 Webhook received:", event.event);
+    if (process.env.NODE_ENV === "development") {
+      console.log("📥 Webhook received:", event.event);
+    }
 
     // Only process payment.captured events
     if (event.event !== "payment.captured") {
@@ -47,10 +49,12 @@ export async function POST(request: NextRequest) {
     // Check if booking already exists with this payment
     const existingBooking = await Booking.findOne({
       razorpayPaymentId: paymentId,
-    });
+    }).lean();
 
     if (existingBooking) {
-      console.log("✅ Booking already processed:", existingBooking._id);
+      if (process.env.NODE_ENV === "development") {
+        console.log("✅ Booking already processed:", existingBooking._id);
+      }
       return NextResponse.json(
         { message: "Already processed" },
         { status: 200 }
@@ -144,7 +148,9 @@ export async function POST(request: NextRequest) {
           bookingSource: "WEBHOOK",
         });
 
-        console.log("✅ Booking recovered from webhook:", recoveredBooking._id);
+        if (process.env.NODE_ENV === "development") {
+          console.log("✅ Booking recovered from webhook:", recoveredBooking._id);
+        }
 
         // Send confirmation email
         try {
@@ -178,7 +184,9 @@ export async function POST(request: NextRequest) {
 
     // Booking exists, update it to PAID
     if (booking.paymentStatus === "PAID") {
-      console.log("✅ Booking already paid:", booking._id);
+      if (process.env.NODE_ENV === "development") {
+        console.log("✅ Booking already paid:", booking._id);
+      }
       return NextResponse.json({ message: "Already paid" }, { status: 200 });
     }
 
@@ -233,7 +241,9 @@ export async function POST(request: NextRequest) {
     booking.razorpayPaymentId = paymentId;
     await booking.save();
 
-    console.log("✅ Webhook processed, booking confirmed:", booking._id);
+    if (process.env.NODE_ENV === "development") {
+      console.log("✅ Webhook processed, booking confirmed:", booking._id);
+    }
 
     // Send confirmation email
     try {

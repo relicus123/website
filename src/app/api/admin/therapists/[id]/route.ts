@@ -20,7 +20,7 @@ export async function GET(
       );
     }
 
-    const therapist = await Therapist.findById(params.id);
+    const therapist = await Therapist.findById(params.id).lean();
 
     if (!therapist) {
       return NextResponse.json(

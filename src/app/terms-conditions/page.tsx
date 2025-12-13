@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Mail, Phone } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { FadeIn } from '@/components/ui/motion/FadeIn';
 import BackToTop from '@/components/BackToTop';
 
 const termsData = [
@@ -195,19 +195,14 @@ export default function TermsConditionsPage() {
       
       {/* 1. Header Section */}
       <section className="bg-gradient-to-r from-emerald-600 to-teal-500 py-20 px-6 text-center text-white shadow-lg">
-        <motion.div 
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ duration: 0.6 }}
-           className="container mx-auto max-w-4xl"
-        >
+        <FadeIn className="container mx-auto max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
             Terms and Conditions
           </h1>
           <p className="text-emerald-100 text-lg opacity-90 max-w-3xl mx-auto leading-relaxed">
             Welcome to Relicus Psychological Services, operated under Relicus Psychology LLP. The name “Relicus” reflects our philosophy: it represents something that has survived from the past. Through our services, we provide a safe space and nurturing environment where clients can confront challenges, heal, and grow.
           </p>
-        </motion.div>
+        </FadeIn>
       </section>
 
       {/* 2. Main Body */}
@@ -235,13 +230,10 @@ export default function TermsConditionsPage() {
           {/* Right Column: Content */}
           <main className="lg:col-span-3 space-y-8">
              {termsData.map((section, index) => (
-               <motion.div 
+               <FadeIn 
                   key={section.id} 
                   id={section.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  delay={index * 0.05}
                   className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-md transition-shadow duration-300 scroll-mt-32"
                >
                  <h2 className="text-2xl font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">
@@ -273,12 +265,12 @@ export default function TermsConditionsPage() {
                      return <p key={idx}>{parseBold(line)}</p>;
                    })}
                  </div>
-               </motion.div>
+               </FadeIn>
              ))}
              
-             <div className="p-6 bg-slate-100 rounded-xl text-center text-slate-500 text-sm">
+             <FadeIn className="p-6 bg-slate-100 rounded-xl text-center text-slate-500 text-sm">
                 By accessing or using our services, you agree to comply with and be bound by these Terms and Conditions.
-             </div>
+             </FadeIn>
           </main>
 
         </div>

@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch doctor
-    const doctor = await Physiologist.findById(doctorId);
+    const doctor = await Physiologist.findById(doctorId).lean();
     if (!doctor) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       date: { $gte: startOfDay, $lte: endOfDay },
       timeSlot: timeSlot,
       paymentStatus: { $in: ["PAID", "PENDING"] },
-    });
+    }).lean();
 
     if (existingBooking) {
       return NextResponse.json(
@@ -95,7 +95,9 @@ export async function POST(request: NextRequest) {
 
     const order = await razorpayInstance.orders.create(orderOptions);
 
-    console.log("✅ Razorpay order created:", order.id);
+    if (process.env.NODE_ENV === "development") {
+      console.log("✅ Razorpay order created:", order.id);
+    }
 
     // Create PENDING booking in database
     const newBooking = await Booking.create({

@@ -60,7 +60,9 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const therapists = await Therapist.find({}).sort({ createdAt: -1 });
+    const therapists = await Therapist.find({})
+      .sort({ createdAt: -1 })
+      .lean();
 
     return NextResponse.json({ success: true, data: therapists });
   } catch (error) {

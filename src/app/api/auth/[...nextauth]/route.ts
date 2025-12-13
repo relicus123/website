@@ -15,15 +15,13 @@ const authOptions = {
       async authorize(credentials) {
         try {
           if (!credentials) {
-            console.log("No credentials provided");
             return null;
           }
 
           await connectDB();
 
-          const user = await User.findOne({ email: credentials.email });
+          const user = await User.findOne({ email: credentials.email }).lean() as any;
           if (!user) {
-            console.log("User not found:", credentials.email);
             return null;
           }
 
@@ -32,11 +30,9 @@ const authOptions = {
             user.password
           );
           if (!isValid) {
-            console.log("Invalid password for:", credentials.email);
             return null;
           }
 
-          console.log("User authenticated:", user.email, "Role:", user.role);
           return {
             id: user._id.toString(),
             name: user.name,
@@ -51,7 +47,8 @@ const authOptions = {
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async jwt({ token, user }: any) {
@@ -66,6 +63,9 @@ const authOptions = {
       (session as any).user.role = token.role;
       return session;
     },
+  },
+  pages: {
+    signIn: "/admin/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

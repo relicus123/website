@@ -7,8 +7,8 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const allTherapists = await Therapist.find({});
-    const activeTherapists = await Therapist.find({ isActive: true });
+    const allTherapists = await Therapist.find({}).lean();
+    const activeTherapists = await Therapist.find({ isActive: true }).lean();
 
     return NextResponse.json({
       success: true,

@@ -59,46 +59,50 @@ export default function HeroSlideshow() {
   };
 
   return (
-    <div className="relative w-full aspect-video md:aspect-[16/9] rounded-xl md:rounded-2xl overflow-hidden bg-white group">
+    <div className="relative w-full aspect-video md:aspect-[16/9] rounded-xl md:rounded-2xl overflow-hidden bg-neutral-100 group">
       {/* Slideshow Images */}
       <div className="relative w-full h-full">
-        {banners.map((banner, index) => (
-          <div
-            key={banner._id}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              index === currentIndex ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {banner.link ? (
-              <a
-                href={banner.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full h-full relative"
-              >
-                <Image
-                  src={banner.imageUrl}
-                  alt={banner.title}
-                  fill
-                  className="object-cover object-center"
-                  priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </a>
-            ) : (
-              <div className="w-full h-full relative">
-                <Image
-                  src={banner.imageUrl}
-                  alt={banner.title}
-                  fill
-                  className="object-cover object-center"
-                  priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
-            )}
-          </div>
-        ))}
+        {banners.map((banner, index) => {
+          const isActive = index === currentIndex;
+          return (
+            <div
+              key={banner._id}
+              className={`absolute inset-0 will-change-transform transition-[opacity,transform] duration-800 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+                isActive ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              }`}
+            >
+              {banner.link ? (
+                <a
+                  href={banner.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full h-full relative"
+                >
+                  <Image
+                    src={banner.imageUrl}
+                    alt={banner.title}
+                    fill
+                    className="object-cover object-center"
+                    priority={index === 0}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </a>
+              ) : (
+                <div className="w-full h-full relative">
+                  <Image
+                    src={banner.imageUrl}
+                    alt={banner.title}
+                    fill
+                    className="object-cover object-center"
+                    priority={index === 0}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-black/10 to-transparent pointer-events-none" />
+            </div>
+          );
+        })}
       </div>
 
       {/* Navigation Arrows (only if multiple banners) */}

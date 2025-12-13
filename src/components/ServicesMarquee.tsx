@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import ServiceDetailModal from "./ServiceDetailModal";
 import { SERVICES_WITH_DETAILS } from "@/data/servicesData";
+import { useGsapStagger } from "@/hooks/useGsapStagger";
+import { motion } from "framer-motion";
+import { iconRotate } from "@/lib/motionVariants";
 
 const DUPLICATED = [...SERVICES_WITH_DETAILS, ...SERVICES_WITH_DETAILS];
 
@@ -14,6 +17,12 @@ export default function ServicesMarquee() {
   const [scrollOffset, setScrollOffset] = useState(0);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Stagger animation for service cards on scroll
+  const cardsContainerRef = useGsapStagger<HTMLDivElement>(".service-card", {
+    stagger: 0.08,
+    yOffset: 20,
+  });
 
   // Apply scroll offset whenever it changes
   useEffect(() => {
@@ -94,6 +103,7 @@ export default function ServicesMarquee() {
 
             <div
               className={`services-marquee ${!isAutoScroll ? "paused" : ""}`}
+              ref={cardsContainerRef}
             >
               <div
                 className="marquee-track"
@@ -153,23 +163,72 @@ function ServiceCard({
   onSelect: () => void;
 }) {
   return (
-    <button onClick={onSelect} className="service-card group cursor-pointer">
-      <div className="card h-full flex flex-col overflow-hidden shadow-md border border-brand-light/70 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group-hover:scale-105">
+    <motion.button
+      onClick={onSelect}
+      className="service-card group cursor-pointer"
+      initial="rest"
+      whileHover="hover"
+      whileTap={{ scale: 0.98 }}
+    >
+      <motion.div
+        className="card h-full flex flex-col overflow-hidden shadow-md border border-brand-light/70"
+        variants={{
+          rest: {
+            scale: 1,
+            y: 0,
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+          },
+          hover: {
+            scale: 1.03,
+            y: -8,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.15)",
+            transition: {
+              duration: 0.3,
+              ease: "easeOut",
+            },
+          },
+        }}
+      >
         <div className="h-48 w-full overflow-hidden bg-white relative">
-          <Image
-            src={service.image}
-            alt={service.title}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, 320px"
-          />
+          <motion.div
+            className="w-full h-full"
+            variants={{
+              rest: { scale: 1 },
+              hover: {
+                scale: 1.1,
+                transition: {
+                  duration: 0.4,
+                  ease: "easeOut",
+                },
+              },
+            }}
+          >
+            <Image
+              src={service.image}
+              alt={service.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 320px"
+            />
+          </motion.div>
         </div>
         <div className="p-4">
-          <p className="text-base font-semibold text-brand-dark leading-snug group-hover:text-brand-green transition">
+          <motion.p
+            className="text-base font-semibold text-brand-dark leading-snug"
+            variants={{
+              rest: { color: "#1c4966" },
+              hover: {
+                color: "#5f8b70",
+                transition: {
+                  duration: 0.2,
+                },
+              },
+            }}
+          >
             {service.title}
-          </p>
+          </motion.p>
         </div>
-      </div>
-    </button>
+      </motion.div>
+    </motion.button>
   );
 }

@@ -7,9 +7,10 @@ if (!MONGODB_URI && process.env.NODE_ENV !== "production") {
 }
 
 /**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
+ * OPTIMIZED MongoDB connection with caching and connection pooling
+ * - Prevents repeated connections
+ * - Fast reconnection with cached promise
+ * - Production-ready settings for instant API responses
  */
 interface GlobalMongoose {
   conn: typeof mongoose | null;
@@ -27,6 +28,18 @@ if (!global.mongoose) {
   global.mongoose = cached;
 }
 
+// Performance-optimized connection options
+const MONGOOSE_OPTIONS = {
+  bufferCommands: false, // Disable buffering for immediate errors
+  maxPoolSize: 10, // Maximum 10 concurrent connections
+  serverSelectionTimeoutMS: 5000, // Fast timeout (5s)
+  socketTimeoutMS: 45000, // Socket timeout
+  family: 4, // Use IPv4, skip IPv6 resolution delay
+  connectTimeoutMS: 10000, // Connection timeout
+  maxIdleTimeMS: 30000, // Close idle connections after 30s
+  minPoolSize: 2, // Keep minimum 2 connections ready
+};
+
 async function connectDB(): Promise<typeof mongoose> {
   if (!MONGODB_URI) {
     throw new Error(
@@ -34,20 +47,26 @@ async function connectDB(): Promise<typeof mongoose> {
     );
   }
 
+  // Return cached connection instantly
   if (cached.conn) {
     return cached.conn;
   }
 
+  // Reuse pending connection promise
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
     cached.promise = mongoose
-      .connect(MONGODB_URI, opts)
+      .connect(MONGODB_URI, MONGOOSE_OPTIONS)
       .then((mongooseInstance) => {
-        console.log("✅ MongoDB connected successfully");
+        // Only log in development
+        if (process.env.NODE_ENV === "development") {
+          console.log("✅ MongoDB connected with connection pooling");
+        }
         return mongooseInstance;
+      })
+      .catch((error) => {
+        console.error("❌ MongoDB connection error:", error.message);
+        cached.promise = null; // Clear failed promise
+        throw error;
       });
   }
 
@@ -59,6 +78,17 @@ async function connectDB(): Promise<typeof mongoose> {
   }
 
   return cached.conn;
+}
+
+// Graceful shutdown handler
+if (process.env.NODE_ENV !== "production") {
+  process.on("SIGINT", async () => {
+    if (cached.conn) {
+      await mongoose.connection.close();
+      console.log("MongoDB connection closed through app termination");
+      process.exit(0);
+    }
+  });
 }
 
 export default connectDB;
