@@ -215,7 +215,10 @@ export default function ServicePage({ params }: ServicePageProps) {
               Take the first step toward your wellness journey. Our experienced
               professionals are here to support you every step of the way.
             </motion.p>
-            <motion.div variants={itemVariants} className="flex gap-4 justify-center flex-wrap">
+            <motion.div
+              variants={itemVariants}
+              className="flex gap-4 justify-center flex-wrap"
+            >
               <Link
                 href="/#book"
                 className="button-primary px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all"

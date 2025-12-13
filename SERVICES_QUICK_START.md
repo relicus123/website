@@ -5,11 +5,13 @@
 You now have a complete, professional services ecosystem:
 
 1. **Centralized Services Data** (`src/data/servicesData.ts`)
+
    - 6 services with full descriptions and FAQs
    - TypeScript interfaces for type safety
    - Backward-compatible with existing code
 
 2. **Enhanced Header Component** (`src/components/Header.tsx`)
+
    - Desktop: Services dropdown opens on hover
    - Mobile: Services accordion opens on click
    - Auto-closes with smooth transitions
@@ -27,13 +29,17 @@ You now have a complete, professional services ecosystem:
 ## 🚀 Try It Now
 
 ### Option 1: Start Dev Server
+
 ```bash
 npm run dev
 ```
+
 Then navigate to: http://localhost:3000
 
 ### Option 2: View a Service
+
 Click "Services" in the navbar dropdown, or visit directly:
+
 - http://localhost:3000/services/counselling-psychotherapy
 - http://localhost:3000/services/psychological-assessments
 - http://localhost:3000/services/learning-support-remedial
@@ -46,6 +52,7 @@ Click "Services" in the navbar dropdown, or visit directly:
 ## 📝 Code Overview
 
 ### Part 1: Services Data Structure
+
 ```typescript
 // src/data/servicesData.ts
 export interface Service {
@@ -73,14 +80,24 @@ export const servicesData: Service[] = [
 ```
 
 ### Part 2: Header Dropdown
+
 ```typescript
 // src/components/Header.tsx - Key sections
 
 // Services dropdown with hover/click handlers
-<div ref={dropdownRef} className="relative" onMouseEnter={handleDropdownEnter} onMouseLeave={handleDropdownLeave}>
+<div
+  ref={dropdownRef}
+  className="relative"
+  onMouseEnter={handleDropdownEnter}
+  onMouseLeave={handleDropdownLeave}
+>
   <button className="flex items-center gap-2">
     Services
-    <svg className={`transition-transform ${servicesDropdownOpen ? "rotate-180" : ""}`}>
+    <svg
+      className={`transition-transform ${
+        servicesDropdownOpen ? "rotate-180" : ""
+      }`}
+    >
       {/* Chevron icon */}
     </svg>
   </button>
@@ -89,9 +106,7 @@ export const servicesData: Service[] = [
   {servicesDropdownOpen && (
     <div className="absolute top-full mt-2 bg-white rounded-lg shadow-lg">
       {servicesData.map((service) => (
-        <Link href={`/services/${service.slug}`}>
-          {service.title}
-        </Link>
+        <Link href={`/services/${service.slug}`}>{service.title}</Link>
       ))}
     </div>
   )}
@@ -99,6 +114,7 @@ export const servicesData: Service[] = [
 ```
 
 ### Part 3: Service Page Structure
+
 ```typescript
 // src/app/services/[slug]/page.tsx
 
@@ -141,16 +157,19 @@ export const servicesData: Service[] = [
 ## ⚡ Animation Details
 
 ### Page Entry
+
 - Fade-in with slight upward movement
 - 600ms smooth transition
 
 ### FAQ Accordion
+
 - Height expands from 0 to auto
 - Opacity transitions 0 to 1
 - Chevron rotates 0° to 180°
 - 300ms smooth easing
 
 ### Dropdown Menu
+
 - 200ms delay before closing (prevents flickering)
 - Smooth hover transitions
 
@@ -159,8 +178,10 @@ export const servicesData: Service[] = [
 ## 🔧 Customization
 
 ### Add a New Service
+
 1. Open `src/data/servicesData.ts`
 2. Add new object to `servicesData` array:
+
 ```typescript
 {
   id: "new-service",
@@ -175,15 +196,18 @@ export const servicesData: Service[] = [
   ]
 }
 ```
+
 3. Page automatically created at `/services/new-service`
 4. Dropdown menu updates automatically
 
 ### Change Colors
+
 - Update gradient classes: `from-emerald-600 to-teal-500`
 - Change hover colors: `hover:bg-emerald-50/50`
 - Modify backgrounds: `bg-gradient-to-b from-emerald-50/50`
 
 ### Adjust Animation Speed
+
 - Page duration: Change `duration: 0.6` to `duration: 1.0`
 - FAQ animation: Change `duration: 0.3` to `duration: 0.5`
 

@@ -22,15 +22,17 @@ src/
 **Location:** `src/data/servicesData.ts`
 
 ### TypeScript Interface
+
 ```typescript
 export interface Service {
-  id: string;                          // Unique identifier
-  title: string;                       // Display name
-  slug: string;                        // URL-friendly name
-  heroImage: string;                   // Image URL
-  shortDescription: string;            // 1-2 line summary
-  fullDescription: string;             // Detailed paragraph
-  faqs: Array<{                        // FAQ entries
+  id: string; // Unique identifier
+  title: string; // Display name
+  slug: string; // URL-friendly name
+  heroImage: string; // Image URL
+  shortDescription: string; // 1-2 line summary
+  fullDescription: string; // Detailed paragraph
+  faqs: Array<{
+    // FAQ entries
     question: string;
     answer: string;
   }>;
@@ -38,6 +40,7 @@ export interface Service {
 ```
 
 ### Data Array Structure
+
 ```typescript
 export const servicesData: Service[] = [
   {
@@ -50,16 +53,17 @@ export const servicesData: Service[] = [
     faqs: [
       {
         question: "How long are therapy sessions?",
-        answer: "Standard therapy sessions are 50-60 minutes long..."
+        answer: "Standard therapy sessions are 50-60 minutes long...",
       },
       // ... more FAQs
-    ]
+    ],
   },
   // ... 5 more services
-]
+];
 ```
 
 ### Available Services
+
 1. `counselling-psychotherapy`
 2. `psychological-assessments`
 3. `learning-support-remedial`
@@ -74,6 +78,7 @@ export const servicesData: Service[] = [
 **Location:** `src/components/Header.tsx`
 
 ### New State Management
+
 ```typescript
 const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
 const dropdownRef = useRef<HTMLDivElement>(null);
@@ -81,25 +86,29 @@ const dropdownTimeoutRef = useRef<NodeJS.Timeout>();
 ```
 
 ### Desktop Dropdown
+
 - **Trigger:** Hover on Services link
 - **Open:** Immediate
 - **Close:** 200ms delay after mouse leave
 - **Styling:** White box, emerald accent, smooth shadow
 
 ### Mobile Submenu
+
 - **Trigger:** Tap on Services button
 - **Behavior:** Expands/collapses on tap
 - **Content:** Nested service links
 - **Auto-close:** When service is selected
 
 ### Key Functions
+
 ```typescript
-handleDropdownEnter()    // Clear timeout, open dropdown
-handleDropdownLeave()    // Set 200ms timeout before close
-handleClickOutside()     // Close when clicking outside (useEffect)
+handleDropdownEnter(); // Clear timeout, open dropdown
+handleDropdownLeave(); // Set 200ms timeout before close
+handleClickOutside(); // Close when clicking outside (useEffect)
 ```
 
 ### Styling Classes
+
 ```
 Desktop:
 - "relative" - Position context for absolute dropdown
@@ -121,6 +130,7 @@ Mobile:
 **Location:** `src/app/services/[slug]/page.tsx`
 
 ### Route Parameter
+
 ```typescript
 interface ServicePageProps {
   params: {
@@ -132,6 +142,7 @@ interface ServicePageProps {
 ### Page Structure
 
 #### A. Hero Section
+
 ```tsx
 <section className="bg-gradient-to-b from-emerald-50/50 to-white pt-32 pb-16">
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -143,7 +154,7 @@ interface ServicePageProps {
       <p>{service.shortDescription}</p>
       <button>Book Now</button>
     </div>
-    
+
     {/* Right: Hero Image */}
     <Image src={service.heroImage} alt={service.title} />
   </div>
@@ -151,12 +162,14 @@ interface ServicePageProps {
 ```
 
 **Responsive Behavior:**
+
 - Mobile: Single column (stacked)
 - Desktop: Two-column grid
 - Image height: 384px (mobile) → 500px (desktop)
 - Typography scales: `text-4xl` → `text-6xl`
 
 #### B. Detailed Content Section
+
 ```tsx
 <section className="py-16 md:py-24 border-b border-brand-light/20">
   <div className="max-w-3xl mx-auto px-4">
@@ -168,26 +181,30 @@ interface ServicePageProps {
 ```
 
 **Features:**
+
 - Centered layout (max-width-3xl)
 - Professional typography
 - Generous line-height for readability
 - Responsive padding
 
 #### C. FAQ Accordion Section
+
 ```tsx
 <section className="py-16 md:py-24">
   <h2 className="text-3xl font-bold text-center bg-gradient-to-r ... mb-12">
     Frequently Asked Questions
   </h2>
-  
+
   {service.faqs.map((faq, index) => (
     <div className="border border-brand-light/30 rounded-lg">
       {/* Header (always visible) */}
       <button onClick={() => toggleFAQ(index)}>
         <span>{faq.question}</span>
-        <ChevronDownIcon className={`rotate-${expandedFAQ === index ? 180 : 0}`} />
+        <ChevronDownIcon
+          className={`rotate-${expandedFAQ === index ? 180 : 0}`}
+        />
       </button>
-      
+
       {/* Body (animated) */}
       <motion.div
         animate={{
@@ -204,6 +221,7 @@ interface ServicePageProps {
 ```
 
 **Accordion Features:**
+
 - Click to expand/collapse
 - Smooth height animation (300ms)
 - Chevron icon rotation
@@ -211,6 +229,7 @@ interface ServicePageProps {
 - Single item expanded at a time
 
 #### D. CTA Section (Bottom)
+
 ```tsx
 <section className="py-16 bg-gradient-to-r from-emerald-50 to-teal-50">
   <h2>Ready to Get Started?</h2>
@@ -225,25 +244,28 @@ interface ServicePageProps {
 ### Animations
 
 **Page Entry**
+
 ```typescript
 const pageVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 ```
 
 **Staggered Children**
+
 ```typescript
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
-  }
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+  },
 };
 ```
 
 **FAQ Smooth Height**
+
 ```typescript
 <motion.div
   initial={{ height: 0, opacity: 0 }}
@@ -256,9 +278,10 @@ const containerVariants = {
 ```
 
 ### Error Handling
+
 ```typescript
 if (!service) {
-  notFound();  // Triggers 404 page
+  notFound(); // Triggers 404 page
 }
 ```
 
@@ -269,6 +292,7 @@ if (!service) {
 **Location:** `src/app/services/[slug]/layout.tsx`
 
 ### Dynamic Metadata
+
 ```typescript
 export async function generateMetadata({
   params,
@@ -276,7 +300,7 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const service = servicesData.find((s) => s.slug === params.slug);
-  
+
   return {
     title: `${service.title} | Relicus`,
     description: service.shortDescription,
@@ -290,12 +314,14 @@ export async function generateMetadata({
 ```
 
 **Benefits:**
+
 - ✅ SEO optimization
 - ✅ Social media sharing (Open Graph)
 - ✅ Dynamic page titles
 - ✅ Proper meta descriptions
 
 ### Static Parameter Generation
+
 ```typescript
 export function generateStaticParams() {
   return servicesData.map((service) => ({
@@ -305,6 +331,7 @@ export function generateStaticParams() {
 ```
 
 **Benefits:**
+
 - ✅ Pre-built pages at deploy time
 - ✅ Zero-latency page loads
 - ✅ Better SEO (static pages are favored)
@@ -315,6 +342,7 @@ export function generateStaticParams() {
 ## 🎨 Tailwind Classes Reference
 
 ### Hero Section
+
 ```
 bg-gradient-to-b from-emerald-50/50 to-white
 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12
@@ -323,6 +351,7 @@ shadow-2xl rounded-2xl
 ```
 
 ### Dropdown Menu
+
 ```
 bg-white rounded-lg shadow-lg border border-brand-light/20
 px-6 py-3 hover:bg-emerald-50/50
@@ -330,6 +359,7 @@ transition-transform rotate-180
 ```
 
 ### FAQ Accordion
+
 ```
 border border-brand-light/30 rounded-lg shadow-sm hover:shadow-md
 px-6 py-4 md:py-5 bg-white hover:bg-brand-light/20
@@ -338,6 +368,7 @@ bg-brand-light/10 px-6 py-4
 ```
 
 ### CTA Section
+
 ```
 bg-gradient-to-r from-emerald-50 to-teal-50
 border-t border-brand-light/20
@@ -349,6 +380,7 @@ py-16 md:py-20
 ## 🔌 Dependencies Used
 
 **Already Installed:**
+
 - ✅ `next` - App Router, Image optimization
 - ✅ `framer-motion` - Page animations
 - ✅ `@heroicons/react` - ChevronDown icon
@@ -360,12 +392,12 @@ py-16 md:py-20
 
 ## 📊 Component Statistics
 
-| File | Lines | Type | Purpose |
-|------|-------|------|---------|
-| servicesData.ts | 285 | Data | Service definitions |
-| Header.tsx | 251 | Component | Navigation with dropdown |
-| [slug]/page.tsx | 307 | Page | Service detail page |
-| [slug]/layout.tsx | 35 | Layout | Metadata generation |
+| File              | Lines | Type      | Purpose                  |
+| ----------------- | ----- | --------- | ------------------------ |
+| servicesData.ts   | 285   | Data      | Service definitions      |
+| Header.tsx        | 251   | Component | Navigation with dropdown |
+| [slug]/page.tsx   | 307   | Page      | Service detail page      |
+| [slug]/layout.tsx | 35    | Layout    | Metadata generation      |
 
 **Total New/Modified Code:** ~878 lines
 
@@ -387,12 +419,14 @@ py-16 md:py-20
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 1. Push code to GitHub
 2. Vercel auto-detects Next.js
 3. Pages pre-built automatically
 4. Dynamic metadata works out of the box
 
 ### Self-Hosted
+
 ```bash
 npm run build
 npm start

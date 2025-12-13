@@ -67,7 +67,8 @@ export const servicesData: Service[] = [
           "A comprehensive report is usually provided within 7-10 business days of completing the assessment, followed by a feedback session.",
       },
       {
-        question: "Can assessment results be used for educational accommodations?",
+        question:
+          "Can assessment results be used for educational accommodations?",
         answer:
           "Yes, our assessments are recognized by educational institutions and can support requests for accommodations and special provisions.",
       },
