@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import DoctorCard from "@/components/DoctorCard";
 import BookingModal from "@/components/BookingModal";
+import DoctorCardSkeleton from "@/components/DoctorCardSkeleton";
 
 interface Doctor {
   _id: string;
@@ -86,11 +87,10 @@ export default function DoctorDirectory({
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center bg-brand-light">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-brand-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-brand-dark">Loading doctors...</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+        {[...Array(6)].map((_, i) => (
+          <DoctorCardSkeleton key={i} />
+        ))}
       </div>
     );
   }

@@ -39,10 +39,14 @@ export async function GET(request: NextRequest) {
     }));
 
 
-    return NextResponse.json({
-      success: true,
-      doctors,
-    });
+    return NextResponse.json(
+      { success: true, doctors },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      }
+    );
 
   } catch (error) {
     console.error("❌ Error fetching doctors:", error);
